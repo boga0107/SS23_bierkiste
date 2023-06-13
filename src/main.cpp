@@ -7,6 +7,8 @@ void IRAM_ATTR onTimer()
 }
 
 void setup() {
+  pinMode(18, OUTPUT);
+  
   timer = timerBegin(0,80,true); //Timer_0, prescaling: 80MHz / 80 = 1MHz -> T=1 us
   timerAttachInterrupt(timer, onTimer, true); //Interrupt Funktion onTimer()
   timerAlarmWrite(timer, 1000000, true); //Faktor für Timer z.B. 1000000*1us = 1s
@@ -15,6 +17,12 @@ void setup() {
   Serial.begin(115200);
 }
 
+
 void loop() {
-  delay(10); // this speeds up the simulation
+  // put your main code here, to run repeatedly:
+  digitalWrite(18, HIGH);
+  delay(1000);
+  digitalWrite(18, LOW);
+  delay(1000);
+
 }
