@@ -1,3 +1,6 @@
+#ifndef PINS_H
+#define PINS_H
+
 #include "Arduino.h"
 
 // Pin Belegung
@@ -10,3 +13,5 @@
 #define sensor2_echo        GPIO_NUM_27
 #define sensor3_trigger     GPIO_NUM_12
 #define sensor3_echo        GPIO_NUM_13
+
+#endif
