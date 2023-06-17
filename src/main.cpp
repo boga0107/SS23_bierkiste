@@ -27,22 +27,10 @@ Serial.begin(9600);
 
 void loop() {
   // put your main code here, to run repeatedly:
-  // sensors[0] = sensor1.read(); //Reads distance in cm
-  // sensors[1] = sensor2.read();
-  // sensors[2] = sensor3.read();
-
-  distanceCheckEasy(emergencyBreakValue, maximalDistanceValue, sensor1.read());
-  distanceCheckEasy(emergencyBreakValue, maximalDistanceValue, sensor2.read());
-  distanceCheckEasy(emergencyBreakValue, maximalDistanceValue, sensor3.read());
+  
+  distanceCheck( sensor1.read());
+  distanceCheck( sensor2.read());
+  distanceCheck( sensor3.read());
 
   delay(1000); //pause für 1 s, determines the rate of distance calculation. Can be changed eventually (mimum 10)
 }
-
-  // for(int i = 0; i<3; i++){
-  //   if(distanceCheck(emergencyBreakValue, i) == false){
-  //     //before interrupting check value again to avoid ghosts
-  //     //interrupt, emergency break!
-  //     //to implement: motor stop (up to date emergency stop)
-  //     printf("EMERGENCY BREAK");
-  //   } //else continue;
-  // }
