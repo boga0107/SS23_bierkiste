@@ -1,4 +1,7 @@
 #include <Arduino.h>
+#include <uart.cpp>
+#include <iostream>
+#include <string>
 
 
 // Pin Belegung
@@ -12,13 +15,35 @@
 #define sensor3_trigger     GPIO_NUM_12
 #define sensor3_echo        GPIO_NUM_13
 
-
+//initialize UART Message
+HardwareSerial SerialPort(2); //Use UART2
+int directionValue = 1;
+int speedValue = 0;
+int steeringValue = 1;
+int distance1Value = 0;
+int distance2Value = 0;
+int distance3Value = 1;
 
 void setup() {
   // put your setup code here, to run once:
+  SerialPort.begin(15200, SERIAL_8N1, 16, 17); //using pin 16 and 17 on ESP (Baudrate, SerialMode, RX_pin, TX_pin)
 }
 
 void loop() {
+
+  buildMessage(directionValue, speedValue, steeringValue, distance1Value, distance2Value, distance3Value);
+  Serial.print(msgUart);
+  //getMessage((byte)msg); //string to byte conversion?? in what format is uart sent and received??
   // put your main code here, to run repeatedly:
+
+  SerialPort.write(msgUart); //uses uart_write_bytes()
+  
+  //Receive message
+  if(Serial.available()>0){
+    uint8_t c = Serial.read(); //uses uart_read_bytes()
+    //should be the byte that was send
+    //how do we extract the bits out of the integer???
+    getMessage(c);  
+  }
 }
 

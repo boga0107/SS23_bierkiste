@@ -3,13 +3,16 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
+#include <cstddef>
+#include <cstring>
 
 char msg[]={};
-String msgUart;
+char* msgUart;
 
-String buildMessage(uint8_t uart, int direction, int speed, int steering_val, int distance1, int distance2, int distance3)
+
+void buildMessage(int direction, int speed, int steering_val, int distance1, int distance2, int distance3)
 {
-    msg[0]= direction;
+    msg[0] = direction;
     msg[1] = speed;
     msg[2] = steering_val;
     msg[3] = distance1;
@@ -19,9 +22,23 @@ String buildMessage(uint8_t uart, int direction, int speed, int steering_val, in
    for(int i = 0; i < 8; i++){
         msgUart += msg[i];
    }
-    Serial.print(msgUart);
-    return msgUart;
 }
+
 void getMessage (uint8_t uart){
+    uint8_t *uartAdress;
+    uartAdress = &uart;
+
+    // shift to read individual bits in a byte
+    // value = a & (1 << i);
+    directionValue = uart & (1 << 0); //should read the 1st bit of the uart byte
+    speedValue = uart & (1 << 1);
+    steeringValue = uart & (1 << 2);
+    // to think about: muss uart statt uint8_t als byte übergeben werden?
     
+    
+    //convert uint8_t value into separate values??
+    // directionValue = uart[0];
+    // speedValue = uart[1];
+    // steeringValue = uart[2];
+    //...
 }
