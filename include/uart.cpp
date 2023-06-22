@@ -10,6 +10,14 @@
 char msg[]={};
 char* msgUart;
 
+//initialize UART Message
+HardwareSerial SerialPort(2); //Use UART2
+int directionValue = 1;
+int speedValue = 0;
+int steeringValue = 1;
+int distance1Value = 0;
+int distance2Value = 0;
+int distance3Value = 1;
 
 void buildMessage(int direction, int speed, int steering_val, int distance1, int distance2, int distance3)
 {
