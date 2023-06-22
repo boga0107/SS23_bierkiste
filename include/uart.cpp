@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstring>
 
+
 char msg[]={};
 char* msgUart;
 

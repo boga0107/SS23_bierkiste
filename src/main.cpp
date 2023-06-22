@@ -1,8 +1,11 @@
 #include <Arduino.h>
 #include <AccelStepper.h> 
-#include <uart.cpp>
 #include <iostream>
-#include <string>             
+#include <string> 
+
+#include "uart.cpp"
+#include "antriebsmotor.h"
+#include "pins.h"
 
 AccelStepper stepper(AccelStepper::FULL4WIRE,33,32,25,14,true);  // 4 wire full stepper
 long steering_val=0;
