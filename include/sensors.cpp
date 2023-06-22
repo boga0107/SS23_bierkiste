@@ -15,10 +15,10 @@ int sensors[3];
 void distanceCheckEasy(int emergencyBreak, int maxDistance, int sensorValue)
 {
   if(sensorValue < emergencyBreak){
-    Serial.println("error ");
+    //Serial.println("error ");
   }
   if(sensorValue > maxDistance){
-    Serial.println("too far away ");
+    //Serial.println("too far away ");
   }
 }
 
@@ -52,5 +52,5 @@ void distanceCheckEasy(int emergencyBreak, int maxDistance, int sensorValue)
 // to check if sensors are correct (triplet-system based)
 // to be implemented in further steps
 bool securityCheck(int sensorNumber){
-
+  return true;
 }

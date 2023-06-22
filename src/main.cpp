@@ -3,11 +3,12 @@
 #include <iostream>
 #include <string> 
 #include <Ultrasonic.h>
-#include <sensors.cpp>
+
 
 #include "uart.cpp"
 #include "antriebsmotor.h"
 #include "pins.h"
+#include "sensors.cpp"
 
 
 AccelStepper stepper(AccelStepper::FULL4WIRE,33,32,25,14,true);  // 4 wire full stepper
