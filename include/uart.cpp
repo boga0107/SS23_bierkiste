@@ -9,6 +9,13 @@
 char msg[]={};
 char* msgUart;
 
+int directionValue = 1;
+int speedValue = 0;
+int steeringValue = 1;
+int distance1Value = 0;
+int distance2Value = 0;
+int distance3Value = 1;
+
 
 void buildMessage(int direction, int speed, int steering_val, int distance1, int distance2, int distance3)
 {
@@ -33,6 +40,9 @@ void getMessage (uint8_t uart){
     directionValue = uart & (1 << 0); //should read the 1st bit of the uart byte
     speedValue = uart & (1 << 1);
     steeringValue = uart & (1 << 2);
+    distance1Value = uart & (1 << 3);
+    distance2Value = uart & (1 << 4);
+    distance3Value = uart & (1 << 5);
     // to think about: muss uart statt uint8_t als byte übergeben werden?
     
     
