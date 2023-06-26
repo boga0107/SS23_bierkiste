@@ -30,6 +30,8 @@ void IRAM_ATTR onTimer()
 
 void setup() {
   pinMode(18, OUTPUT);
+
+  Serial.begin(115200);
   
   timer = timerBegin(0,80,true); //Timer_0, prescaling: 80MHz / 80 = 1MHz -> T=1 us
   timerAttachInterrupt(timer, onTimer, true); //Interrupt Funktion onTimer()
@@ -54,6 +56,7 @@ void loop() {
     ledcWrite(PWMChannel, dutyCycle);
     flag1ms = false;
   }
+  Serial.println("Test");
 
 }
 
