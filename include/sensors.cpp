@@ -1,13 +1,10 @@
 #include "sensors.h"
 
-sensor::sensor(uint8_t &pTriggerPin1, uint8_t &pTriggerPin2, uint8_t &pTriggerPin3, uint8_t &pEchoPin1
-    , uint8_t &pEchoPin2, uint8_t &pEchoPin3):
+sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,uint8_t TriggerPin3,
+              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3);
     sensorTriggerPin1(pTriggerPin1), sensorTriggerPin2(pTriggerPin2), sensorTriggerPin3(pTriggerPin3), 
     sensorEchoPin1(pEchoPin1), sensorEchoPin2(pEchoPin2), sensorEchoPin3(pEchoPin3){
-      //sensorSetup with Ultrasonic
-      Ultrasonic sensor1(sensorTriggerPin1, sensorEchoPin1);
-      Ultrasonic sensor2(sensorTriggerPin2, sensorEchoPin2);
-      Ultrasonic sensor3(sensorTriggerPin3, sensorEchoPin3);
+
 }
 
 void sensor::setDistance(uint8_t value, uint8_t number){
@@ -24,6 +21,9 @@ void sensor::setDistance(uint8_t value, uint8_t number){
 }
 
 void sensor::readDistance(){
+  Ultrasonic sensor1(sensorTriggerPin1, sensorEchoPin1);
+  Ultrasonic sensor2(sensorTriggerPin2, sensorEchoPin2);
+  Ultrasonic sensor3(sensorTriggerPin3, sensorEchoPin3);
   setDistance(sensor1.read(), 1);
   setDistance(sensor2.read(), 2);
   setDistance(sensor3.read(), 3);

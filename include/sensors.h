@@ -24,12 +24,12 @@ private:
     uint8_t distance3;
 
 public:
-    sensor(uint8_t &pTriggerPin1, uint8_t &pTriggerPin2, uint8_t &pTriggerPin3, uint8_t &pEchoPin1
-    , uint8_t &pEchoPin2, uint8_t &pEchoPin3);
+    sensor(uint8_t TriggerPin1, uint8_t TriggerPin2, uint8_t TriggerPin3, uint8_t EchoPin1
+    , uint8_t EchoPin2, uint8_t EchoPin3);
 
     void readDistance();
     void setDistance(uint8_t value, uint8_t number);
-    uint8_t getDistance1();
+    uint8_t getDistance(uint8_t number);
     void distanceCheck();
     bool securityCheck(uint8_t sensorNumber);
 };
