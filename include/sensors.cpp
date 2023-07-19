@@ -1,10 +1,11 @@
 #include "sensors.h"
 
 sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,uint8_t TriggerPin3,
-              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3);
-    sensorTriggerPin1(pTriggerPin1), sensorTriggerPin2(pTriggerPin2), sensorTriggerPin3(pTriggerPin3), 
-    sensorEchoPin1(pEchoPin1), sensorEchoPin2(pEchoPin2), sensorEchoPin3(pEchoPin3){
+              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3):
 
+    sensorTriggerPin1(TriggerPin1), sensorTriggerPin2(TriggerPin2), sensorTriggerPin3(TriggerPin3), 
+    sensorEchoPin1(EchoPin1), sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3)
+    {
 }
 
 void sensor::setDistance(uint8_t value, uint8_t number){
