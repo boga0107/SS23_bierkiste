@@ -8,7 +8,7 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,uint8_t TriggerPin3,
     {
 }
 
-void sensor::setDistance(uint8_t value, uint8_t number){
+void sensor::setDistance(uint16_t value, uint8_t number){
   switch (number) {
     case 1:
       distance1 = value;
@@ -30,7 +30,7 @@ void sensor::readDistance(){
   setDistance(sensor3.read(), 3);
 }
 
-uint8_t sensor::getDistance(uint8_t number){
+uint16_t sensor::getDistance(uint8_t number){
   switch (number) {
     case 1:
       return distance1;

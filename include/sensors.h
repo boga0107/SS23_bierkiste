@@ -11,25 +11,25 @@
 class sensor {
 
 private:
-    const uint8_t emergencyDistanceValue = 70;
-    const uint8_t maximalDistanceValue = 350;
+    const uint16_t emergencyDistanceValue = 70;
+    const uint16_t maximalDistanceValue = 350;
     const uint8_t sensorTriggerPin1;
     const uint8_t sensorTriggerPin2;
     const uint8_t sensorTriggerPin3;
     const uint8_t sensorEchoPin1;
     const uint8_t sensorEchoPin2;
     const uint8_t sensorEchoPin3;
-    uint8_t distance1;
-    uint8_t distance2;
-    uint8_t distance3;
+    uint16_t distance1;
+    uint16_t distance2;
+    uint16_t distance3;
 
 public:
     sensor(uint8_t TriggerPin1, uint8_t TriggerPin2, uint8_t TriggerPin3, uint8_t EchoPin1
     , uint8_t EchoPin2, uint8_t EchoPin3);
 
     void readDistance();
-    void setDistance(uint8_t value, uint8_t number);
-    uint8_t getDistance(uint8_t number);
+    void setDistance(uint16_t value, uint8_t number);
+    uint16_t getDistance(uint8_t number);
     void distanceCheck();
     bool securityCheck(uint8_t sensorNumber);
 };
