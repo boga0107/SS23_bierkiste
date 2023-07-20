@@ -11,8 +11,10 @@
 #define sensor2_echo        GPIO_NUM_27
 #define sensor3_trigger     GPIO_NUM_12
 #define sensor3_echo        GPIO_NUM_13
+#define rx_pin              GPIO_NUM_16
+#define tx_pin              GPIO_NUM_17
 
-Uart myUart(16, 17, 115200, SERIAL_8N1);
+Uart myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 
 void setup() {
   
