@@ -97,10 +97,11 @@ void UartMessage::getMessage(){
             msgUartReceive[i] += SerialPort.read();
         }
     }
-    //oder: 
-    // char terminator = ',';
-    // while(SerialPort.available() != 0){
-    //     // setDirection(SerialPort.readBytesUntil(terminator, 1, 16));
-    //     //etc...
-    // }
+    setDirection(msgUartReceive[0]);
+    uint8_t Dummy1 = msgUartReceive[1];
+    uint8_t Dummy2 = msgUartReceive[2];
+    setSpeed((Dummy1 << 8) | (Dummy2 ));
+    uint8_t Dummy3 = msgUartReceive[3];
+    uint8_t Dummy4 = msgUartReceive[4];
+    setSteering((Dummy3 << 8) | (Dummy4 ));
 }

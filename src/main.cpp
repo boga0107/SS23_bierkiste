@@ -16,9 +16,8 @@
 #define tx_pin              GPIO_NUM_17
 
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
-//UartMessage myUart2;
 void setup() {
-  
+  Serial.begin(115200);
 }
 
 void loop() {
