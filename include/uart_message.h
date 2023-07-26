@@ -1,7 +1,7 @@
 #include <HardwareSerial.h>
 #include <Arduino.h>
 
-class Uart {
+class UartMessage {
 
 private:
     const uint8_t uart_rx_pin;
@@ -14,12 +14,12 @@ private:
     uint16_t distance_2;
     uint16_t distance_3;
     uint16_t steering;
-    byte power;
-    char* msgUartSend;
-    char* msgUartReceive;
+    //byte power;
+    byte msgUartSend[9];
+    byte msgUartReceive[5];
 
 public:
-    Uart(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode);
+    UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode);
 
     void setDirection(byte value);
     byte getDirection();
@@ -29,9 +29,9 @@ public:
     uint16_t getDistance(int number);
     void setSteering(uint16_t value);
     uint16_t getSteering();
-    void setPower(byte value);
-    byte getPower();
+    // void setPower(byte value);
+    // byte getPower();
     
-    void buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, uint16_t distance3, uint16_t steering, byte power);
+    void buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, uint16_t distance3);
     void getMessage();
 };

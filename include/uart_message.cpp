@@ -1,43 +1,43 @@
 #include "uart_message.h"
 
-Uart::Uart(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode):
+UartMessage::UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode):
     uart_rx_pin(rx_pin), uart_tx_pin(tx_pin), baudrate(sBaudrate), serialMode(sSerialMode){
     
 }
 
-void Uart::setDirection(byte value){
+void UartMessage::setDirection(byte value){
     direction = value;
 }
 
-byte Uart::getDirection(){
+byte UartMessage::getDirection(){
     return direction;
 }
 
-void Uart::setSpeed(uint16_t value){
+void UartMessage::setSpeed(uint16_t value){
     speed = value;
 }
 
-uint16_t Uart::getSpeed(){
+uint16_t UartMessage::getSpeed(){
     return speed;
 }
 
-void Uart::setSteering(uint16_t value){
+void UartMessage::setSteering(uint16_t value){
     steering = value;
 }
 
-uint16_t Uart::getSteering(){
+uint16_t UartMessage::getSteering(){
     return steering;
 }
 
-void Uart::setPower(byte value){
-    power = value;
-}
+// void UartMessage::setPower(byte value){
+//     power = value;
+// }
 
-byte Uart::getPower(){
-    return power;
-}
+// byte UartMessage::getPower(){
+//     return power;
+// }
 
-void Uart::setDistance(uint16_t value, int number){
+void UartMessage::setDistance(uint16_t value, int number){
     switch (number) {
         case 0:
             distance_1 = value;
@@ -50,7 +50,7 @@ void Uart::setDistance(uint16_t value, int number){
     }
 }
 
-uint16_t Uart::getDistance(int number){
+uint16_t UartMessage::getDistance(int number){
     switch (number) {
         case 0:
             return distance_1;
@@ -64,8 +64,8 @@ uint16_t Uart::getDistance(int number){
     }
 }
 
-void Uart::buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, 
-                        uint16_t distance3, uint16_t steering, byte power){
+void UartMessage::buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, 
+                        uint16_t distance3){
     //initialize UART Message
     HardwareSerial SerialPort(2); //Use UART2
     SerialPort.begin(baudrate, serialMode, uart_rx_pin, uart_tx_pin);
@@ -76,39 +76,22 @@ void Uart::buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint
     SerialPort.write(distance1);
     SerialPort.write(distance2);
     SerialPort.write(distance3);
-    SerialPort.write(steering);
-    SerialPort.write(power);
 
-    //alternative: build one message out of char buffer:
-    char msg[]={};
- 
-    msg[0] = direction;
-    msg[1] = speed;
-    msg[2] = distance1;
-    msg[3] = distance2;
-    msg[4] = distance3;
-    msg[5] = steering;
-    msg[6] = power;
-    
-    for(int i = 0; i<7; i++){
-        msgUartSend += msg[i];
-    }
-    //to be tested!!
 }
 
-void Uart::getMessage(){
+void UartMessage::getMessage(){
     HardwareSerial SerialPort(2);
     SerialPort.begin(baudrate, serialMode, uart_rx_pin, uart_tx_pin);
 
     while(SerialPort.available() != 0){
         for(int i = 0; i < SerialPort.available(); i++){    
-            msgUartReceive += SerialPort.read();
+            msgUartReceive[i] += SerialPort.read();
         }
     }
     //oder: 
-    char terminator = ',';
-    while(SerialPort.available() != 0){
-       // setDirection(SerialPort.readBytesUntil(terminator, 1, 16));
-        //etc...
-    }
+    // char terminator = ',';
+    // while(SerialPort.available() != 0){
+    //     // setDirection(SerialPort.readBytesUntil(terminator, 1, 16));
+    //     //etc...
+    // }
 }

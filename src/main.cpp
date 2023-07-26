@@ -14,16 +14,21 @@
 #define rx_pin              GPIO_NUM_16
 #define tx_pin              GPIO_NUM_17
 
-Uart myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
+UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 
 void setup() {
+  myUart.setDirection(0);
+  myUart.setSpeed(0);
+  myUart.setDistance(100, 0);
+  myUart.setDistance(100, 1);
+  myUart.setDistance(100, 2);
   
 }
 
 void loop() {
   myUart.buildMessage(myUart.getDirection(), myUart.getSpeed(), myUart.getDistance(0), myUart.getDistance(1), 
-                      myUart.getDistance(2), myUart.getSteering(), myUart.getPower());
-  myUart.getMessage();
+                      myUart.getDistance(2));
+  //myUart.getMessage();
 }
 
 
