@@ -3,6 +3,11 @@
 UartMessage::UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode):
     uart_rx_pin(rx_pin), uart_tx_pin(tx_pin), baudrate(sBaudrate), serialMode(sSerialMode){
     
+    direction = 0;
+    speed = 270;
+    distance_1 = 100;
+    distance_2 = 120;
+    distance_3 = 140;
 }
 
 void UartMessage::setDirection(byte value){
@@ -49,6 +54,7 @@ void UartMessage::setDistance(uint16_t value, int number){
             distance_3 = value;
             break;
         default:
+            break;
         //do nothing!!
     }
 }
@@ -63,7 +69,7 @@ uint16_t UartMessage::getDistance(int number){
             return distance_3;
         default:
             //do nothing and break
-            break;
+            return 0;
     }
 }
 

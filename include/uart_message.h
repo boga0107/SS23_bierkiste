@@ -1,3 +1,5 @@
+#ifndef uart_message 
+#define uart_message 
 #include <HardwareSerial.h>
 #include <Arduino.h>
 
@@ -19,6 +21,7 @@ private:
     byte msgUartReceive[5];
 
 public:
+    UartMessage();
     UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode);
 
     void setDirection(byte value);
@@ -35,3 +38,4 @@ public:
     void buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, uint16_t distance3);
     void getMessage();
 };
+#endif

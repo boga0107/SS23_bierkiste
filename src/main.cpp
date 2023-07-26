@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "uart_message.h"
+#include "uart_message.cpp"
 
 // Pin Belegung
 #define out_driveDirection  GPIO_NUM_5
@@ -15,13 +16,8 @@
 #define tx_pin              GPIO_NUM_17
 
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
-
+//UartMessage myUart2;
 void setup() {
-  myUart.setDirection(0);
-  myUart.setSpeed(0);
-  myUart.setDistance(100, 0);
-  myUart.setDistance(100, 1);
-  myUart.setDistance(100, 2);
   
 }
 
