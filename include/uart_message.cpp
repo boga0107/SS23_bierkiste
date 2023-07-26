@@ -41,10 +41,13 @@ void UartMessage::setDistance(uint16_t value, int number){
     switch (number) {
         case 0:
             distance_1 = value;
+            break;
         case 1:
             distance_2 = value;
+            break;
         case 2:
             distance_3 = value;
+            break;
         default:
         //do nothing!!
     }
