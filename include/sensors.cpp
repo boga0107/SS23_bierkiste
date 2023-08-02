@@ -1,56 +1,65 @@
-#include <Ultrasonic.h>
+#include "sensors.h"
 
-//class to define the HC-SR04 Sensors
-//contains:
-// read distance
-// ghost avoidance --- to implement
-// security definitions of emergency break
+sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,uint8_t TriggerPin3,
+              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3):
 
-// int safetyCheck = 0; //Check which sensor got a signal
-int emergencyBreakValue = 70; //Distance to trigger emergency break. Now set to default = 70 cm.
-int maximalDistanceValue = 350; 
-int sensors[3];
+    sensorTriggerPin1(TriggerPin1), sensorTriggerPin2(TriggerPin2), sensorTriggerPin3(TriggerPin3), 
+    sensorEchoPin1(EchoPin1), sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3)
+    {
+}
 
-//check if distance is either below emergency break distance or above maximal distance measued.
-void distanceCheckEasy(int emergencyBreak, int maxDistance, int sensorValue)
-{
-  if(sensorValue < emergencyBreak){
-    //Serial.println("error ");
-  }
-  if(sensorValue > maxDistance){
-    //Serial.println("too far away ");
+void sensor::setDistance(uint16_t value, uint8_t number){
+  switch (number) {
+    case 1:
+      distance1 = value;
+    case 2:
+      distance2 = value;
+    case 3: 
+      distance3 = value;
+    default:
+      //do nothing for now
+  } 
+}
+
+void sensor::readDistance(){
+  Ultrasonic sensor1(sensorTriggerPin1, sensorEchoPin1);
+  Ultrasonic sensor2(sensorTriggerPin2, sensorEchoPin2);
+  Ultrasonic sensor3(sensorTriggerPin3, sensorEchoPin3);
+  setDistance(sensor1.read(), 1);
+  setDistance(sensor2.read(), 2);
+  setDistance(sensor3.read(), 3);
+}
+
+uint16_t sensor::getDistance(uint8_t number){
+  switch (number) {
+    case 1:
+      return distance1;
+    case 2:
+      return distance2;
+    case 3:
+      return distance3;  
+    default:
+      return 0;
   }
 }
 
 // check if distance is below emergency break distance. 
-// emergency distance is kept as parameter to be more accessible during programming than a fixed value
+void sensor::distanceCheck()
+{
+  for (int i=1; i<4; i++){
+    if(getDistance(i) < emergencyDistanceValue){
+      Serial.println("error ");
+    }
+    if(getDistance(i) > maximalDistanceValue){
+      Serial.println("too far away ");
+    }
+  }
 
-// bool distanceCheck(int emergencyBreak, int sensorNumber)
-// {
-//   switch(sensorNumber)
-//   {
-//     case 0:
-//       if (sensors[0] > emergencyBreak){
-//         //safetyCheck++;
-//         return true;
-//       }
-//     case 1:
-//       if (sensors[1] > emergencyBreak){
-//         //safetyCheck++;
-//         return true;
-//       }
-//     case 2:
-//       if (sensors[2] > emergencyBreak){
-//         //safetyCheck++;
-//         return true;
-//       }
-//     default:
-//       return false;
-//   }
-// }
+}
 
 // to check if sensors are correct (triplet-system based)
 // to be implemented in further steps
-bool securityCheck(int sensorNumber){
+bool sensor::securityCheck(uint8_t sensorNumber){
   return true;
 }
+
