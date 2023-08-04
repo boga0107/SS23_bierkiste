@@ -3,6 +3,10 @@
 #define RXD2 16
 #define TXD2 17
 
+byte direction = 0;
+uint16_t speed = 0;
+int16_t steering = 0;
+
 
 void setup() {
   Serial.begin(115200);
@@ -13,15 +17,32 @@ void setup() {
 
 
 void loop() {
-  if(Serial2.available()){
+  if(Serial2.available()>=5){
     Serial.print(Serial2.available());
     Serial.print(" - ");
-    for (int i = 0; i < 9; i++)
+
+    byte* steering_ptr = (byte*)&steering;
+    for(int i = 0; i < sizeof(steering); i++)
     {
-      Serial.print(Serial2.read());
-      Serial.print(" ");
+      steering_ptr[i] = Serial.read();
     }
+    Serial.print(steering);
+    Serial.print(" ");
+    
+    byte* speed_ptr = (byte*)&speed;
+    for (int i = 0; i < sizeof(speed); i++)
+    {
+      speed_ptr[i] = Serial.read();
+    }
+    Serial.print(speed);
+    Serial.print(" ");
+
+    direction = Serial2.read();
+    Serial.print(direction);
+  
+    
     Serial.println();
+   
   }  
 
 }
