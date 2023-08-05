@@ -12,12 +12,16 @@ void sensor::setDistance(uint16_t value, uint8_t number){
   switch (number) {
     case 1:
       distance1 = value;
+      break;
     case 2:
       distance2 = value;
+      break;
     case 3: 
       distance3 = value;
+      break;
     default:
       //do nothing for now
+      break;
   } 
 }
 

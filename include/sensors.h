@@ -1,3 +1,5 @@
+#ifndef sensors 
+#define sensors
 #include <Arduino.h>
 #include <Ultrasonic.h>
 
@@ -33,3 +35,4 @@ public:
     void distanceCheck();
     bool securityCheck(uint8_t sensorNumber);
 };
+#endif

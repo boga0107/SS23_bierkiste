@@ -5,6 +5,7 @@
 #include "antriebsmotor.h"
 #include "pins.h"
 #include "sensors.h"
+#include "sensors.cpp"
 hw_timer_t *timer = NULL;
 
 void IRAM_ATTR onTimer()
