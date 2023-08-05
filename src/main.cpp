@@ -16,7 +16,7 @@ void IRAM_ATTR onTimer()
 AccelStepper stepper(AccelStepper::FULL4WIRE, 33, 32, 25, 14, true); // 4 wire full stepper
 long steering_val = 0;
 
-sensor sensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo);
+sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo);
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 
 void setup() {
@@ -39,8 +39,8 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  sensors.readDistance();
-  sensors.distanceCheck();
+  mySensors.readDistance();
+  mySensors.distanceCheck();
   
   delay(1000); //pause für 1 s, determines the rate of distance calculation. Can be changed eventually (mimum 10)
 
