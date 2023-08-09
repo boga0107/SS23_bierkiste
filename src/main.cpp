@@ -17,29 +17,25 @@ void setup() {
 
 
 void loop() {
-  if(Serial2.available()>=5){
+  if(Serial2.read()==0xAA){
     Serial.print(Serial2.available());
     Serial.print(" - ");
 
-    byte* steering_ptr = (byte*)&steering;
-    for(int i = 0; i < sizeof(steering); i++)
-    {
-      steering_ptr[i] = Serial.read();
-    }
-    Serial.print(steering);
+   direction = Serial2.read();
+    Serial.print(direction);
     Serial.print(" ");
-    
+
     byte* speed_ptr = (byte*)&speed;
-    for (int i = 0; i < sizeof(speed); i++)
-    {
-      speed_ptr[i] = Serial.read();
-    }
+    speed_ptr[0] = Serial2.read();
+    speed_ptr[1] = Serial2.read();
     Serial.print(speed);
     Serial.print(" ");
 
-    direction = Serial2.read();
-    Serial.print(direction);
-  
+    byte* steering_ptr = (byte*)&steering;
+    steering_ptr[0] = Serial2.read();
+    steering_ptr[1] = Serial2.read();
+    Serial.print(steering);
+
     
     Serial.println();
    
