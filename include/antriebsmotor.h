@@ -15,13 +15,13 @@ private:
     const uint8_t mDirectionPin;
 
     uint16_t mSpeed;
-    boolean mDirection;
+    byte mDirection;
         // TRUE = backwards
         // FALSE = forward
     
 public:
-    antrieb(uint8_t &pThrottlePin, uint8_t &pDirectionPin);
-    boolean setDirection(boolean &pDirection); 
+    antrieb(uint8_t pThrottlePin, uint8_t pDirectionPin);
+    boolean setDirection(byte &pDirection); 
     boolean setSpeed(uint16_t &pSpeed);
     boolean setSaveState();
 

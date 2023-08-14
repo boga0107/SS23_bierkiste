@@ -1,6 +1,6 @@
 #include "antriebsmotor.h"
 
-antrieb::antrieb(uint8_t &pThrottlePin, uint8_t &pDirectionPin):
+antrieb::antrieb(uint8_t pThrottlePin, uint8_t pDirectionPin):
     mThrottlePin(pThrottlePin), mDirectionPin(pDirectionPin), mSpeed(0), mDirection(0){
     // PWM setup
     ledcSetup(PWM_CHANNEL, PWM_FREQUENCY, PWM_RESOLUTION);
@@ -16,7 +16,7 @@ antrieb::antrieb(uint8_t &pThrottlePin, uint8_t &pDirectionPin):
     setDirection(mDirection);    
 }
 
-boolean antrieb::setDirection(boolean &pDirection){
+boolean antrieb::setDirection(byte &pDirection){
     mDirection = pDirection;
     digitalWrite(mDirectionPin, mDirection);
     return true;
