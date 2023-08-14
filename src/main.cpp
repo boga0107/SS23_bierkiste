@@ -19,6 +19,10 @@ int16_t steering_val = 0;
 sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo);
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 
+antrieb myAntrieb(out_driveThrottle, out_driveDirection);
+byte direction = 0;
+uint16_t speed = 270;
+
 void setup() {
   timer = timerBegin(0, 80, true);            // Timer_0, prescaling: 80MHz / 80 = 1MHz -> T=1 us
   timerAttachInterrupt(timer, onTimer, true); // Interrupt Funktion onTimer()
@@ -44,8 +48,16 @@ void loop() {
   
   delay(1000); //pause für 1 s, determines the rate of distance calculation. Can be changed eventually (mimum 10)
 
+  /* read the instructions from the surface */
   myUart.getInstructions();
+
+  /* set the motor */
+  myUart.getDirection(direction);
+  myUart.getSpeed(speed);
+  myAntrieb.setDirection(direction);
+  myAntrieb.setSpeed(speed);
     
+  /* set the steering */
   myUart.getSteering(steering_val);
   stepper.moveTo(steering_val * (-10)); // negative anticlockwise
   while (stepper.distanceToGo() != 0)
