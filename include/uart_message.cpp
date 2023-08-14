@@ -1,8 +1,10 @@
 #include "uart_message.h"
 
-UartMessage::UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode):
-    uart_rx_pin(rx_pin), uart_tx_pin(tx_pin), baudrate(sBaudrate), serialMode(sSerialMode){
-    
+UartMessage::UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode) : uart_rx_pin(rx_pin), uart_tx_pin(tx_pin), baudrate(sBaudrate), serialMode(sSerialMode)
+{
+
+    Serial2.begin(baudrate, serialMode, uart_rx_pin, uart_tx_pin);
+
     direction = 0;
     speed = 270;
     distance_1 = 100;
@@ -10,98 +12,48 @@ UartMessage::UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uin
     distance_3 = 140;
 }
 
-void UartMessage::setDirection(byte value){
-    direction = value;
-}
+void UartMessage::getInstructions()
+{
+    /* Polling for first byte of the message */
+    if (Serial2.read() == MESSAGE_ID)
+    {
+        /* reading the message */
+        Serial2.readBytes(rxBuffer, 5);
 
-byte UartMessage::getDirection(){
-    return direction;
-}
+        /* Asigning the received data */
+        /* Drive direction */
+        direction = rxBuffer[0];
 
-void UartMessage::setSpeed(uint16_t value){
-    speed = value;
-}
+        /* Speed */
+        byte *speed_ptr = (byte *)&speed;
+        speed_ptr[0] = rxBuffer[1];
+        speed_ptr[1] = rxBuffer[2];
 
-uint16_t UartMessage::getSpeed(){
-    return speed;
-}
-
-void UartMessage::setSteering(uint16_t value){
-    steering = value;
-}
-
-uint16_t UartMessage::getSteering(){
-    return steering;
-}
-
-// void UartMessage::setPower(byte value){
-//     power = value;
-// }
-
-// byte UartMessage::getPower(){
-//     return power;
-// }
-
-void UartMessage::setDistance(uint16_t value, int number){
-    switch (number) {
-        case 0:
-            distance_1 = value;
-            break;
-        case 1:
-            distance_2 = value;
-            break;
-        case 2:
-            distance_3 = value;
-            break;
-        default:
-            break;
-        //do nothing!!
+        /* Steering */
+        byte *steering_ptr = (byte *)&steering;
+        steering_ptr[0] = rxBuffer[3];
+        steering_ptr[1] = rxBuffer[4];
     }
 }
 
-uint16_t UartMessage::getDistance(int number){
-    switch (number) {
-        case 0:
-            return distance_1;
-        case 1:
-            return distance_2;
-        case 2: 
-            return distance_3;
-        default:
-            //do nothing and break
-            return 0;
-    }
+void UartMessage::getDirection(byte &pDirection)
+{
+    pDirection = direction;
 }
 
-void UartMessage::buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, 
-                        uint16_t distance3){
-    //initialize UART Message
-    HardwareSerial SerialPort(2); //Use UART2
-    SerialPort.begin(baudrate, serialMode, uart_rx_pin, uart_tx_pin);
-
-    //Send out every byte by itself
-    SerialPort.write(direction);
-    SerialPort.write(speed);
-    SerialPort.write(distance1);
-    SerialPort.write(distance2);
-    SerialPort.write(distance3);
-
+void UartMessage::getSpeed(uint16_t &pSpeed)
+{
+    pSpeed = speed;
 }
 
-void UartMessage::getMessage(){
-    HardwareSerial SerialPort(2);
-    SerialPort.begin(baudrate, serialMode, uart_rx_pin, uart_tx_pin);
+void UartMessage::getDistance(uint16_t *pDistance[3])
+{
+    *pDistance[0] = distance_1; 
+    *pDistance[1] = distance_2;
+    *pDistance[2] = distance_3;
+}
 
-    while(SerialPort.available() != 0){
-        for(int i = 0; i < SerialPort.available(); i++){    
-            msgUartReceive[i] += SerialPort.read();
-        }
-    }
-    setDirection(msgUartReceive[0]);
-    uint8_t Dummy1 = msgUartReceive[1];
-    uint8_t Dummy2 = msgUartReceive[2];
-    setSpeed((Dummy1 << 8) | (Dummy2 ));
-    uint8_t Dummy3 = msgUartReceive[3];
-    uint8_t Dummy4 = msgUartReceive[4];
-    setSteering((Dummy3 << 8) | (Dummy4 ));
+void UartMessage::getSteering(int16_t &pSteering)
+{
+    pSteering = steering;
 }

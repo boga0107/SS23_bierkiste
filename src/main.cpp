@@ -14,7 +14,7 @@ void IRAM_ATTR onTimer()
 }
 
 AccelStepper stepper(AccelStepper::FULL4WIRE, 33, 32, 25, 14, true); // 4 wire full stepper
-long steering_val = 0;
+int16_t steering_val = 0;
 
 sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo);
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
@@ -44,10 +44,10 @@ void loop() {
   
   delay(1000); //pause für 1 s, determines the rate of distance calculation. Can be changed eventually (mimum 10)
 
-  myUart.buildMessage(myUart.getDirection(), myUart.getSpeed(), myUart.getDistance(0), myUart.getDistance(1), myUart.getDistance(2));
-   //myUart.getMessage();
-
-   stepper.moveTo(steering_val * (-10)); // negative anticlockwise
+  myUart.getInstructions();
+    
+  myUart.getSteering(steering_val);
+  stepper.moveTo(steering_val * (-10)); // negative anticlockwise
   while (stepper.distanceToGo() != 0)
   {
     stepper.run();

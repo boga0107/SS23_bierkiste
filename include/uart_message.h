@@ -3,6 +3,8 @@
 #include <HardwareSerial.h>
 #include <Arduino.h>
 
+#define MESSAGE_ID 0xAA
+
 class UartMessage {
 
 private:
@@ -12,30 +14,26 @@ private:
     const uint64_t serialMode;
     byte direction;
     uint16_t speed;
+    int16_t steering;
     uint16_t distance_1;
     uint16_t distance_2;
     uint16_t distance_3;
-    uint16_t steering;
+    
     //byte power;
-    byte msgUartSend[9];
-    byte msgUartReceive[5];
+    byte rxBuffer[5];
+    byte txBuffer[7];
 
 public:
-    UartMessage();
     UartMessage(uint8_t rx_pin, uint8_t tx_pin, uint64_t sBaudrate, uint64_t sSerialMode);
 
-    void setDirection(byte value);
-    byte getDirection();
-    void setSpeed(uint16_t value);
-    uint16_t getSpeed();
-    void setDistance(uint16_t value, int number);
-    uint16_t getDistance(int number);
-    void setSteering(uint16_t value);
-    uint16_t getSteering();
+    void getInstructions();
+    
+    void getDirection(byte &pDirection);
+    void getSpeed(uint16_t &pSpeed);
+    void getDistance(uint16_t *pDistance[3]);
+    void getSteering(int16_t &pSteering);
     // void setPower(byte value);
     // byte getPower();
     
-    void buildMessage(byte direction, uint16_t speed, uint16_t distance1, uint16_t distance2, uint16_t distance3);
-    void getMessage();
 };
 #endif
