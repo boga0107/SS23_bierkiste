@@ -6,6 +6,8 @@
 #include "pins.h"
 #include "sensors.h"
 #include "sensors.cpp"
+#include "bremse.h"
+#include "bremse.cpp"
 hw_timer_t *timer = NULL;
 
 void IRAM_ATTR onTimer()
@@ -16,12 +18,16 @@ void IRAM_ATTR onTimer()
 AccelStepper stepper(AccelStepper::FULL4WIRE, 33, 32, 25, 14, true); // 4 wire full stepper
 int16_t steering_val = 0;
 
-sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo);
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
 byte direction = 0;
 uint16_t speed = 270;
+
+Break myBreak(myAntrieb);
+
+sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo, myBreak);
+
 
 void setup() {
   timer = timerBegin(0, 80, true);            // Timer_0, prescaling: 80MHz / 80 = 1MHz -> T=1 us

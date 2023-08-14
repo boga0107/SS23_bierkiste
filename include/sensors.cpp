@@ -1,10 +1,10 @@
 #include "sensors.h"
 
 sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,uint8_t TriggerPin3,
-              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3):
+              uint8_t EchoPin1, uint8_t EchoPin2, uint8_t EchoPin3, Break &pBreak):
 
     sensorTriggerPin1(TriggerPin1), sensorTriggerPin2(TriggerPin2), sensorTriggerPin3(TriggerPin3), 
-    sensorEchoPin1(EchoPin1), sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3)
+    sensorEchoPin1(EchoPin1), sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3), myBreak(pBreak)
     {
 }
 
@@ -53,6 +53,7 @@ void sensor::distanceCheck()
   for (int i=1; i<4; i++){
     if(getDistance(i) < emergencyDistanceValue){
       Serial.println("error ");
+      myBreak.EmergencyBreak();
     }
     if(getDistance(i) > maximalDistanceValue){
       Serial.println("too far away ");

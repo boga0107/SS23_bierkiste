@@ -2,6 +2,7 @@
 #define sensors
 #include <Arduino.h>
 #include <Ultrasonic.h>
+#include "bremse.h"
 
 //class to define the HC-SR04 Sensors
 //contains:
@@ -25,9 +26,11 @@ private:
     uint16_t distance2;
     uint16_t distance3;
 
+    Break &myBreak;
+
 public:
     sensor(uint8_t TriggerPin1, uint8_t TriggerPin2, uint8_t TriggerPin3, uint8_t EchoPin1
-    , uint8_t EchoPin2, uint8_t EchoPin3);
+    , uint8_t EchoPin2, uint8_t EchoPin3, Break &pBreak);
 
     void readDistance();
     void setDistance(uint16_t value, uint8_t number);
