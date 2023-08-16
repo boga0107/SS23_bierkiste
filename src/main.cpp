@@ -17,6 +17,8 @@ In this process, C++ proved to be the ideal programming language for this task.
 #include "bremse.h"
 #include "bremse.cpp"
 
+#include <esp_task_wdt.h> //Load Watchdog-Library
+#define WDT_TIMEOUT_SECONDS 5
 hw_timer_t *timer = NULL;
 
 /*!!!!TIMER into class!!!!*/
@@ -56,6 +58,10 @@ void setup() {
   stepper.enableOutputs();
   // stepper.setOutputPins(AccelStepper::FULL4WIRE);
   stepper.setMinPulseWidth(20); // 20 microseconds
+
+  //Watchdog Setup 
+  esp_task_wdt_init(WDT_TIMEOUT_SECONDS,true); //Init Watchdog with 5 seconds timeout and panicmode
+  esp_task_wdt_add(NULL); //No special task executed before restart
 }
 
 void loop() {
@@ -87,5 +93,7 @@ void loop() {
   {
     stepper.run();
   }
+
+  esp_task_wdt_reset(); //reset watchdog timer
 }
 
