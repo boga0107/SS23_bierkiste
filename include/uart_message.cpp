@@ -57,3 +57,8 @@ void UartMessage::getSteering(int16_t &pSteering)
 {
     pSteering = steering;
 }
+
+bool UartMessage::msgAvailable()
+{
+    return Serial2.available();
+}

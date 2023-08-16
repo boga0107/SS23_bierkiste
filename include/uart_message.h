@@ -32,8 +32,7 @@ public:
     void getSpeed(uint16_t &pSpeed);
     void getDistance(uint16_t *pDistance[3]);
     void getSteering(int16_t &pSteering);
-    // void setPower(byte value);
-    // byte getPower();
+    bool msgAvailable();
     
 };
 #endif
