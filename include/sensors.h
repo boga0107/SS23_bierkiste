@@ -36,6 +36,7 @@ public:
     void setDistance(uint16_t value, uint8_t number);
     uint16_t getDistance(uint8_t number);
     void distanceCheck();
+    bool distanceOK();
     bool securityCheck(uint8_t sensorNumber);
 };
 #endif
