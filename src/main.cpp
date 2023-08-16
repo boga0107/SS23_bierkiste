@@ -35,7 +35,12 @@ byte direction = 0;
 uint16_t speed = 270;
 
 /* global objets */
-AccelStepper stepper(AccelStepper::FULL4WIRE, 33, 32, 25, 14, true); // 4 wire full stepper
+AccelStepper stepper(AccelStepper::FULL4WIRE,
+                     P_STEERING_PULSE, 
+                     N_STEERING_PULSE, 
+                     P_STEERING_DIRECTION, 
+                     N_STEERING_DIRECTION, 
+                     true); // 4 wire full stepper
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
 Break myBreak(myAntrieb);

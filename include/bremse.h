@@ -5,13 +5,13 @@
 #include "pins.h"
 #include "antriebsmotor.h"
 
+#define BREAK_PWM_FREQUENCY 5000
+#define BREAK_PWM_CHANNEL 1
+#define BREAK_PWM_RESOLUTION 8
 class Break{
 
 private:
-    const uint16_t PWM_Freq;
-    const uint8_t PWM_Channel;
-    const uint8_t PWM_Resolution;
-
+    
     boolean EmergencyBreakActive;
 
     uint8_t DutyCycle;

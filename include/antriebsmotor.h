@@ -1,7 +1,7 @@
 #ifndef ANTRIEBSMOTOR_H
 #define ANTRIEBSMOTOR_H
 
-#include "pins.h"
+#include <Arduino.h>
 
 #define PWM_FREQUENCY 5000
 #define PWM_CHANNEL 0
@@ -16,15 +16,14 @@ private:
 
     uint16_t mSpeed;
     byte mDirection;
-        // TRUE = backwards
-        // FALSE = forward
+        /*  TRUE = backwards 
+         *  FALSE = forward  */
     
 public:
     antrieb(uint8_t pThrottlePin, uint8_t pDirectionPin);
     boolean setDirection(byte &pDirection); 
     boolean setSpeed(uint16_t &pSpeed);
     boolean setSaveState();
-
 };
 
 #endif

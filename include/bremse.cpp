@@ -1,11 +1,11 @@
 #include "bremse.h"
 
-Break::Break(antrieb &pAntrieb):PWM_Freq(5000), PWM_Channel(0), PWM_Resolution(8), myAntrieb(pAntrieb), EmergencyBreakActive(0)
+Break::Break(antrieb &pAntrieb): myAntrieb(pAntrieb), EmergencyBreakActive(0)
 {
     DutyCycle = 0;
     maxDutyCycle = 100;
-    ledcSetup(PWM_Channel, PWM_Freq, PWM_Resolution);
-    ledcAttachPin(out_brake,PWM_Channel);
+    ledcSetup(BREAK_PWM_CHANNEL, BREAK_PWM_FREQUENCY, BREAK_PWM_RESOLUTION);
+    ledcAttachPin(out_brake,BREAK_PWM_CHANNEL);
 }
 
 /*Function to engage the break
@@ -13,7 +13,7 @@ maxDutyCycle was checked manually
 */
 void Break::Activate_EmergencyBreak()
 {
-    ledcWrite(PWM_Channel, maxDutyCycle);
+    ledcWrite(BREAK_PWM_CHANNEL, maxDutyCycle);
     myAntrieb.setSaveState();
     EmergencyBreakActive = 1;
 }
@@ -21,7 +21,7 @@ void Break::Activate_EmergencyBreak()
 /*Function to deactivate/ go to starting position*/
 void Break::Deactivate_EmergencyBreak()
 {
-    ledcWrite(PWM_Channel, DutyCycle);
+    ledcWrite(BREAK_PWM_CHANNEL, DutyCycle);
     EmergencyBreakActive = 0;
 }
 

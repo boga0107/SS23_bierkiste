@@ -16,6 +16,9 @@
 #define sensor3_echo        GPIO_NUM_13
 #define rx_pin              GPIO_NUM_16
 #define tx_pin              GPIO_NUM_17
-
+#define N_STEERING_DIRECTION GPIO_NUM_26
+#define P_STEERING_DIRECTION GPIO_NUM_25
+#define N_STEERING_PULSE    GPIO_NUM_33
+#define P_STEERING_PULSE    GPIO_NUM_34
 
 #endif

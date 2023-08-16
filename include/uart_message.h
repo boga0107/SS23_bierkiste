@@ -1,6 +1,6 @@
-#ifndef uart_message 
-#define uart_message 
-#include <HardwareSerial.h>
+#ifndef UART_MESSAGE_H 
+#define UART_MESSAGE_H
+
 #include <Arduino.h>
 
 #define MESSAGE_ID 0xAA
@@ -31,6 +31,7 @@ public:
     void getDirection(byte &pDirection);
     void getSpeed(uint16_t &pSpeed);
     void getDistance(uint16_t *pDistance[3]);
+    // void setDistance(uint16_t *pDistance[3]);
     void getSteering(int16_t &pSteering);
     bool msgAvailable();
     
