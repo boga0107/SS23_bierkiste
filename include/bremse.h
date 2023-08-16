@@ -11,6 +11,9 @@ private:
     const uint16_t PWM_Freq;
     const uint8_t PWM_Channel;
     const uint8_t PWM_Resolution;
+
+    boolean EmergencyBreakActive;
+
     uint8_t DutyCycle;
     uint8_t maxDutyCycle;
 
@@ -22,6 +25,7 @@ public:
 
     void Activate_EmergencyBreak();
     void Deactivate_EmergencyBreak();
+    boolean get_State_Break();
 
 };
 

@@ -53,7 +53,7 @@ void sensor::distanceCheck()
   for (int i=1; i<4; i++){
     if(getDistance(i) < emergencyDistanceValue){
       Serial.println("error ");
-      myBreak.EmergencyBreak();
+      myBreak.Activate_EmergencyBreak();
     }
     if(getDistance(i) > maximalDistanceValue){
       Serial.println("too far away ");
