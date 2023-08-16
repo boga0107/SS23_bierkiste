@@ -27,7 +27,7 @@
 /* global variables */
 /* timer variables */
 hw_timer_t *timer = NULL;
-uint32_t counter20ms = 0;
+uint32_t counter1us = 0;
 bool flag20ms = true;
 
 int16_t steering_val = 0;
@@ -88,7 +88,6 @@ void loop()
       /* set direction  */
       myUart.getDirection(direction);
       myAntrieb.setDirection(direction);
-      
 
       /* set the steering */
       myUart.getSteering(steering_val);
@@ -130,5 +129,8 @@ void stepper_init()
 /* Timer interrupt service routine */
 void IRAM_ATTR onTimer()
 {
-  flag20ms = true;
+  if (counter1us % 20000 == 0)
+  {
+    flag20ms = true;
+  }
 }
