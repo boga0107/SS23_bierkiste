@@ -25,6 +25,7 @@
 #define WDT_TIMEOUT_SECONDS 5
 
 /* global variables */
+TaskHandle_t Task_Sensors;
 /* timer variables */
 hw_timer_t *timer = NULL;
 uint32_t counter1us = 0;
@@ -36,10 +37,10 @@ uint16_t speed = 270;
 
 /* global objets */
 AccelStepper stepper(AccelStepper::FULL4WIRE,
-                     P_STEERING_PULSE, 
-                     N_STEERING_PULSE, 
-                     P_STEERING_DIRECTION, 
-                     N_STEERING_DIRECTION, 
+                     P_STEERING_PULSE,
+                     N_STEERING_PULSE,
+                     P_STEERING_DIRECTION,
+                     N_STEERING_DIRECTION,
                      true); // 4 wire full stepper
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
@@ -49,6 +50,7 @@ sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo
 /* Function prototypes */
 void setup();
 void loop();
+void sensorMain(void *parameter);
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
@@ -64,6 +66,30 @@ void setup()
   /* Watchdog Setup */
   esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
   esp_task_wdt_add(NULL);                       /* No special task executed before restart */
+
+  /* mulitcore setup */
+  if (xPortGetCoreID() == 1)
+  {
+    xTaskCreatePinnedToCore(
+        sensorMain,
+        "TaskSensor",
+        1000,
+        NULL,
+        0,
+        &Task_Sensors,
+        0);
+  }
+  else
+  {
+    xTaskCreatePinnedToCore(
+        sensorMain,
+        "TaskSensor",
+        1000,
+        NULL,
+        0,
+        &Task_Sensors,
+        1);
+  }
 }
 
 /* Loop function
@@ -71,13 +97,6 @@ void setup()
  */
 void loop()
 {
-  /* execute the distance reading every 20ms */
-  if (flag20ms)
-  {
-    mySensors.readDistance();
-    flag20ms = false;
-  }
-
   /* check for messages in the UART */
   if (myUart.msgAvailable())
   {
@@ -109,6 +128,21 @@ void loop()
   }
 
   esp_task_wdt_reset(); // reset watchdog timer
+}
+
+void sensorMain(void *parameter)
+{
+  for (;;)
+  {
+    /* execute the distance reading every 20ms */
+    if (flag20ms)
+    {
+      mySensors.readDistance();
+      flag20ms = false;
+    }
+    
+    esp_task_wdt_reset();
+  }
 }
 
 /* Timer initialisation */
