@@ -42,6 +42,8 @@ Break myBreak(myAntrieb);
 sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo, myBreak);
 
 /* Function prototypes */
+void setup();
+void loop();
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
@@ -53,7 +55,6 @@ void setup()
 {
   timer_init();
   stepper_init();
-  Serial.begin(115200);
 
   /* Watchdog Setup */
   esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
