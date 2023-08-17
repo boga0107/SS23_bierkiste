@@ -70,25 +70,11 @@ void setup()
   /* mulitcore setup */
   if (xPortGetCoreID() == 1)
   {
-    xTaskCreatePinnedToCore(
-        sensorMain,
-        "TaskSensor",
-        1000,
-        NULL,
-        0,
-        &Task_Sensors,
-        0);
+    xTaskCreatePinnedToCore(sensorMain, "TaskSensor", 1000, NULL, 0, &Task_Sensors, 0);
   }
   else
   {
-    xTaskCreatePinnedToCore(
-        sensorMain,
-        "TaskSensor",
-        1000,
-        NULL,
-        0,
-        &Task_Sensors,
-        1);
+    xTaskCreatePinnedToCore(sensorMain, "TaskSensor", 1000, NULL, 0, &Task_Sensors, 1);
   }
 }
 
