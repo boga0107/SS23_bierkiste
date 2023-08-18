@@ -1,6 +1,6 @@
 #include "bremse.h"
 
-Break::Break(antrieb &pAntrieb): myAntrieb(pAntrieb), EmergencyBreakActive(0)
+Break::Break(antrieb &pAntrieb, SemaphoreHandle_t &pSemaphore): myAntrieb(pAntrieb), mySemaphore(pSemaphore), EmergencyBreakActive(0)
 {
     DutyCycle = 0;
     maxDutyCycle = 100;
@@ -15,19 +15,32 @@ void Break::Activate_EmergencyBreak()
 {
     ledcWrite(BREAK_PWM_CHANNEL, maxDutyCycle);
     myAntrieb.setSaveState();
-    EmergencyBreakActive = 1;
+    if(xSemaphoreTake(mySemaphore, portMAX_DELAY) == pdTRUE)
+    {
+        EmergencyBreakActive = 1;
+    }
+    xSemaphoreGive(mySemaphore);
 }
 
 /*Function to deactivate/ go to starting position*/
 void Break::Deactivate_EmergencyBreak()
 {
     ledcWrite(BREAK_PWM_CHANNEL, DutyCycle);
-    EmergencyBreakActive = 0;
+    if(xSemaphoreTake(mySemaphore, portMAX_DELAY) == pdTRUE)
+    {
+        EmergencyBreakActive = 0;
+    }
+    xSemaphoreGive(mySemaphore);
 }
 
 /*Function to get to know the sate of the break.
 If Break is engaged then 1, if not then 0.*/
  boolean Break::get_State_Break()
  {
-    return EmergencyBreakActive;
+    if(xSemaphoreTake(mySemaphore, portMAX_DELAY) == pdTRUE)
+    {
+        pEmergencyBreakActive = EmergencyBreakActive;
+    }
+    xSemaphoreGive(mySemaphore);
+    return pEmergencyBreakActive;
  }

@@ -13,21 +13,22 @@ class Break{
 private:
     
     boolean EmergencyBreakActive;
+    boolean pEmergencyBreakActive;
 
     uint8_t DutyCycle;
     uint8_t maxDutyCycle;
 
     antrieb &myAntrieb;
+    SemaphoreHandle_t &mySemaphore;
 
 public:
     
-    Break(antrieb &pAntrieb);
+    Break(antrieb &pAntrieb, SemaphoreHandle_t &pSemaphore);
 
     void Activate_EmergencyBreak();
     void Deactivate_EmergencyBreak();
     boolean get_State_Break();
 
 };
-
 
 #endif
