@@ -26,6 +26,7 @@
 
 /* global variables */
 TaskHandle_t Task_Sensors;
+SemaphoreHandle_t mySemaphore;
 /* timer variables */
 hw_timer_t *timer = NULL;
 uint32_t counter1us = 0;
@@ -44,7 +45,7 @@ AccelStepper stepper(AccelStepper::FULL4WIRE,
                      true); // 4 wire full stepper
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
-Break myBreak(myAntrieb);
+Break myBreak(myAntrieb, mySemaphore);
 sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo, myBreak);
 
 /* Function prototypes */
@@ -76,6 +77,8 @@ void setup()
   {
     xTaskCreatePinnedToCore(sensorMain, "TaskSensor", 1000, NULL, 0, &Task_Sensors, 1);
   }
+  /* Semaphore setup */
+  mySemaphore = xSemaphoreCreateMutex();
 }
 
 /* Loop function
