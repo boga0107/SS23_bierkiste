@@ -61,6 +61,8 @@ void setup()
 {
   timer_init();
   stepper_init();
+  speed = 270;
+  myAntrieb.setSpeed(speed);
 
   /* Watchdog Setup */
   esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
@@ -108,7 +110,6 @@ void loop()
 
       /* set the speed */
       myUart.getSpeed(speed);
-      Serial.println(speed);
       myAntrieb.setSpeed(speed);
     }
     else {
