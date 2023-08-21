@@ -15,18 +15,19 @@ class Break{
 private:
     
     boolean EmergencyBreakActive;
+    boolean pEmergencyBreakActive;
 
     antrieb &myAntrieb;
+    SemaphoreHandle_t &mySemaphore;
 
 public:
     
-    Break(antrieb &pAntrieb);
+    Break(antrieb &pAntrieb, SemaphoreHandle_t &pSemaphore);
 
     void Activate_EmergencyBreak();
     void Deactivate_EmergencyBreak();
     boolean get_State_Break();
 
 };
-
 
 #endif
