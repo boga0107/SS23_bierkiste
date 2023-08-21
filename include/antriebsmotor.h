@@ -5,7 +5,7 @@
 
 #define PWM_FREQUENCY 5000
 #define PWM_CHANNEL 0
-#define PWM_RESOLUTION 10
+#define PWM_RESOLUTION 16
 const uint16_t MAX_DUTY_CYCLE = (int)(pow(2, PWM_RESOLUTION)-1);
 
 

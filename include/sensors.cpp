@@ -9,6 +9,12 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,
                                                                     sensor2(sensorTriggerPin2, sensorEchoPin2),
                                                                     sensor3(sensorTriggerPin3, sensorEchoPin3)
 {
+  pinMode(sensor1_trigger, OUTPUT);
+  pinMode(sensor1_echo, INPUT);
+  pinMode(sensor2_trigger, OUTPUT);
+  pinMode(sensor2_echo, INPUT);
+  pinMode(sensor3_trigger, OUTPUT);
+  pinMode(sensor3_echo, INPUT);
 }
 
 void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
@@ -16,18 +22,19 @@ void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
   switch (sensorIndex)
   {
   case 1:
-    distance1 = pDistance;
+    distance1 = 300;
     break;
   case 2:
-    distance2 = pDistance;
+    distance2 = 300;
     break;
   case 3:
-    distance3 = pDistance;
+    distance3 = 300;
     break;
   default:
     // do nothing for now
     break;
   }
+  
 }
 
 /* read the distance and break if necessary*/
@@ -52,7 +59,7 @@ uint16_t sensor::getDistance(uint8_t sensorIndex)
   case 3:
     return distance3;
   default:
-    return 0;  /* might cause an emergency break */
+    return 0; /* might cause an emergency break */
   }
 }
 

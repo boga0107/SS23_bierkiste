@@ -14,6 +14,7 @@
 #include "uart_message.cpp"
 #include <AccelStepper.h>
 #include "antriebsmotor.h"
+#include "antriebsmotor.cpp"
 #include "pins.h"
 #include "sensors.h"
 #include "sensors.cpp"
@@ -28,7 +29,7 @@
 /* timer variables */
 hw_timer_t *timer = NULL;
 uint32_t counter1us = 0;
-bool flag20ms = true;
+bool flag20ms = false;
 
 int16_t steering_val = 0;
 byte direction = 0;
@@ -64,6 +65,8 @@ void setup()
   /* Watchdog Setup */
   esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
   esp_task_wdt_add(NULL);                       /* No special task executed before restart */
+  Serial.begin(115200);
+  Serial.println("Setup done");
 }
 
 /* Loop function
@@ -81,6 +84,7 @@ void loop()
   /* check for messages in the UART */
   if (myUart.msgAvailable())
   {
+    //Serial.println("Uart received");
     /* read the instructions from the surface */
     myUart.getInstructions();
     if (mySensors.distanceOK())
@@ -104,7 +108,11 @@ void loop()
 
       /* set the speed */
       myUart.getSpeed(speed);
+      Serial.println(speed);
       myAntrieb.setSpeed(speed);
+    }
+    else {
+      Serial.println("Distance not ok");
     }
   }
 
@@ -124,6 +132,7 @@ void timer_init()
 /* Initialisation of stepper */
 void stepper_init()
 {
+  
   stepper.setAcceleration(5000); /* Acceleration in steps/s^2 */
   stepper.setMaxSpeed(5000);     /* Speed in steps/s */
   stepper.setSpeed(2000);

@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <Ultrasonic.h>
 #include "bremse.h"
+#include "pins.h"
 
 /* class to define the HC-SR04 Sensors
  * contains:
