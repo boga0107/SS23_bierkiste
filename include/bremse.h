@@ -6,7 +6,7 @@
 #include "antriebsmotor.h"
 
 #define BREAK_PWM_FREQUENCY 1000
-#define BREAK_PWM_CHANNEL 1
+#define BREAK_PWM_CHANNEL 0
 #define BREAK_PWM_RESOLUTION 8
 #define MIN_POSITION 2^8
 #define MAX_POSITION 0
