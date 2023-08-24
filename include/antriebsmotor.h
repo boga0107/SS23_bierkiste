@@ -4,7 +4,7 @@
 #include <Arduino.h>
 
 #define PWM_FREQUENCY 5000
-#define PWM_CHANNEL 1
+#define PWM_CHANNEL 2
 #define PWM_RESOLUTION 8
 const uint16_t MAX_DUTY_CYCLE = (int)(pow(2, PWM_RESOLUTION)-1);
 
