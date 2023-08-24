@@ -103,10 +103,12 @@ void loop()
       /* set the steering */
       myUart.getSteering(steering_val);
       stepper.moveTo(steering_val * (-10)); // negative anticlockwise
+      /*
       while (stepper.distanceToGo() != 0)
       {
         stepper.run();
       }
+      */
 
       /* set the speed */
       myUart.getSpeed(speed);
@@ -116,6 +118,12 @@ void loop()
       Serial.println("Distance not ok");
     }
   }
+
+  if (stepper.distanceToGo() != 0)
+  {
+    stepper.run();
+  }
+  
 
   esp_task_wdt_reset(); // reset watchdog timer
 }
