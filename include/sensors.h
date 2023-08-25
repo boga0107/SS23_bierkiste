@@ -30,9 +30,7 @@ private:
     uint16_t distance2;
     uint16_t distance3;
 
-    Ultrasonic sensor1;
-    Ultrasonic sensor2;
-    Ultrasonic sensor3;
+    
 
     Break &myBreak;
 
@@ -45,5 +43,9 @@ public:
     uint16_t getDistance(uint8_t sensorIndex);
     bool distanceOK();
     bool securityCheck(uint8_t sensorIndex);
+
+    Ultrasonic sensor1;
+    Ultrasonic sensor2;
+    Ultrasonic sensor3;
 };
 #endif

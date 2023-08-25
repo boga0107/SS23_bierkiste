@@ -22,7 +22,7 @@ boolean antrieb::setDirection(byte &pDirection){
 
 boolean antrieb::setSpeed(uint16_t &pSpeed){
     mSpeed = pSpeed;
-    Serial.println(mSpeed);
+    //Serial.println(mSpeed);
     ledcWrite(PWM_CHANNEL, mSpeed);
     return true;
 }

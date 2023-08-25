@@ -22,13 +22,20 @@ void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
   switch (sensorIndex)
   {
   case 1:
-    distance1 = 300;
+    distance1 = pDistance;
+    Serial.print("Sensor 1: ");
+    Serial.println(distance1);
     break;
   case 2:
-    distance2 = 300;
+    distance2 = pDistance;
+    Serial.print("Sensor 2: ");
+    Serial.println(distance2);
     break;
   case 3:
-    distance3 = 300;
+    distance3 = pDistance;
+    Serial.print("Sensor 3: ");
+    Serial.println(distance3);
+
     break;
   default:
     // do nothing for now
