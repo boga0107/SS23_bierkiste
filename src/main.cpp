@@ -59,7 +59,7 @@ void steeringMain(void *parameter);
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
-void IRAM_ATTR ISR_Emergancy_Break();
+void IRAM_ATTR ISR_Emergency_Break();
 
 /* Setup function
  * initialisation of timer, stepper and watchdog
@@ -92,7 +92,7 @@ void setup()
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
   Semaphore_Steering = xSemaphoreCreateMutex();
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergancy_Break, RISING);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, RISING);
 
 }
 
@@ -223,7 +223,7 @@ void IRAM_ATTR onTimer()
 }
 
 /* ISR Emergancy Break */
-void IRAM_ATTR ISR_Emergancy_Break()
+void IRAM_ATTR ISR_Emergency_Break()
 {
   myBreak.Activate_EmergencyBreak();
 }
