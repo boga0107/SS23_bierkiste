@@ -46,12 +46,6 @@ void UartMessage::getSpeed(uint16_t &pSpeed)
     pSpeed = speed;
 }
 
-void UartMessage::getDistance(uint16_t *pDistance[3])
-{
-    *pDistance[0] = distance_1; 
-    *pDistance[1] = distance_2;
-    *pDistance[2] = distance_3;
-}
 
 void UartMessage::getSteering(int16_t &pSteering)
 {
@@ -62,3 +56,28 @@ bool UartMessage::msgAvailable()
 {
     return Serial2.available();
 }
+
+bool UartMessage::availableForTransmit()
+{
+    return Serial2.availableForWrite();
+}
+
+void UartMessage::transmitDistances(uint16_t pDistance[3])
+{
+    distance_1 = pDistance[0];
+    distance_2 = pDistance[1];
+    distance_3 = pDistance[2];
+
+    txBuffer[0] = 0xAA;
+    
+    byte* distance_ptr = (byte *)pDistance;
+    for (int i = 0; i < 6; i++)
+    {
+        txBuffer[i+1] = distance_ptr[i];
+    }
+    
+    Serial2.write(txBuffer, sizeof(txBuffer));
+}
+
+
+

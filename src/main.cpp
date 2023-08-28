@@ -23,10 +23,12 @@
 #include <esp_task_wdt.h> /* Load Watchdog-Library */
 
 /* defines */
-#define WDT_TIMEOUT_SECONDS 10
+// #define WDT_TIMEOUT_SECONDS 10
 /* global variables */
 TaskHandle_t Task_Sensors;
+TaskHandle_t Task_Steering;
 SemaphoreHandle_t mySemaphore;
+SemaphoreHandle_t Semaphore_Steering;
 /* timer variables */
 hw_timer_t *timer = NULL;
 uint32_t counter1ms = 0;
@@ -35,6 +37,7 @@ bool flagSensor = false;
 int16_t steering_val = 0;
 byte direction = 0;
 uint16_t speed = 270;
+uint16_t distances[3];
 
 /* global objets */
 AccelStepper stepper(AccelStepper::FULL4WIRE,
@@ -52,6 +55,7 @@ sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo
 void setup();
 void loop();
 void sensorMain(void *parameter);
+void steeringMain(void *parameter);
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
@@ -67,8 +71,8 @@ void setup()
   myAntrieb.setSpeed(speed);
 
   /* Watchdog Setup */
-  esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
-  esp_task_wdt_add(NULL);                       /* No special task executed before restart */
+  // esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
+  // esp_task_wdt_add(NULL);                       /* No special task executed before restart */
   Serial.begin(115200);
   Serial.println("Setup done");
   myBreak.Deactivate_EmergencyBreak();
@@ -82,8 +86,11 @@ void setup()
   {
     xTaskCreatePinnedToCore(sensorMain, "TaskSensor", 1000, NULL, 0, &Task_Sensors, 1);
   }
+
+  xTaskCreate(steeringMain, "TaskSteering", 1000, NULL, 0, &Task_Steering);
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
+  Semaphore_Steering = xSemaphoreCreateMutex();
 }
 
 /* Loop function
@@ -94,8 +101,8 @@ void loop()
   /* execute the distance reading every 20ms */
   if (flagSensor)
   {
-    //Serial.print(counter1ms);
-    //Serial.println(" - measure");
+    // Serial.print(counter1ms);
+    // Serial.println(" - measure");
     mySensors.readDistance();
     flagSensor = false;
 
@@ -122,14 +129,13 @@ void loop()
 
       /* set the steering */
       myUart.getSteering(steering_val);
-      steering_val = 0.7 * steering_val;
-      stepper.moveTo(steering_val * (-10)); // negative anticlockwise
-      /*
-      while (stepper.distanceToGo() != 0)
+      // steering_val = 0.7 * steering_val;
+
+      if (xSemaphoreTake(Semaphore_Steering, portMAX_DELAY) == pdTRUE)
       {
-        stepper.run();
+        stepper.moveTo(steering_val * (-5)); // negative anticlockwise
       }
-      */
+      xSemaphoreGive(Semaphore_Steering);
 
       /* set the speed */
       myUart.getSpeed(speed);
@@ -137,16 +143,23 @@ void loop()
     }
     else
     {
-      // Serial.println("Distance not ok");
+      //Serial.println("Distance not ok");
+    }
+    if(myUart.availableForTransmit()){
+      for (int i = 0; i < sizeof(distances); i++)
+      {
+        distances[i] = mySensors.getDistance(i+1);
+      }
+      myUart.transmitDistances(distances);
     }
   }
 
-  if (stepper.distanceToGo() != 0)
-  {
-    stepper.run();
-  }
+  /*  if (stepper.distanceToGo() != 0)
+   {
+     stepper.run();
+   } */
 
-  esp_task_wdt_reset(); // reset watchdog timer
+  // esp_task_wdt_reset(); // reset watchdog timer
 }
 
 void sensorMain(void *parameter)
@@ -154,16 +167,26 @@ void sensorMain(void *parameter)
   for (;;)
   {
     /* execute the distance reading every 20ms */
-    if (flag20ms)
+    if (flagSensor)
     {
       mySensors.readDistance();
-      flag20ms = false;
+      flagSensor = false;
     }
-    
-    esp_task_wdt_reset();
+
+    // esp_task_wdt_reset();
   }
 }
 
+void steeringMain(void *parameter)
+{
+  for (;;)
+  {
+    while (stepper.distanceToGo() != 0)
+    {
+      stepper.run();
+    }
+  }
+}
 /* Timer initialisation */
 void timer_init()
 {

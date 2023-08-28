@@ -19,29 +19,40 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,
 
 void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
 {
+  if (pDistance == 0)
+  {
+    Serial.print("Sensor ");
+    Serial.print(sensorIndex);
+    Serial.println(" not working!");
+  }
   switch (sensorIndex)
   {
   case 1:
     distance1 = pDistance;
+    /*
     Serial.print("Sensor 1: ");
     Serial.println(distance1);
+    */
     break;
   case 2:
     distance2 = pDistance;
+    /*
     Serial.print("Sensor 2: ");
     Serial.println(distance2);
+    */
     break;
   case 3:
     distance3 = pDistance;
+    /*
     Serial.print("Sensor 3: ");
     Serial.println(distance3);
+    */
 
     break;
   default:
     // do nothing for now
     break;
   }
-  
 }
 
 /* read the distance and break if necessary*/

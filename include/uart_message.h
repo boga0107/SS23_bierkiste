@@ -30,10 +30,10 @@ public:
     
     void getDirection(byte &pDirection);
     void getSpeed(uint16_t &pSpeed);
-    void getDistance(uint16_t *pDistance[3]);
-    // void setDistance(uint16_t *pDistance[3]);
     void getSteering(int16_t &pSteering);
     bool msgAvailable();
+    bool availableForTransmit();
+    void transmitDistances(uint16_t pDistance[3]);
     
 };
 #endif
