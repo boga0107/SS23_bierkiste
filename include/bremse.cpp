@@ -11,7 +11,7 @@ maxDutyCycle was checked manually
 */
 void Break::Activate_EmergencyBreak()
 {
-    ledcWrite(BREAK_PWM_CHANNEL, MAX_POSITION);
+    ledcWrite(BREAK_PWM_CHANNEL, BREAK_SET);
     myAntrieb.setSaveState();
     EmergencyBreakActive = true;
 }
@@ -19,7 +19,7 @@ void Break::Activate_EmergencyBreak()
 /*Function to deactivate/ go to starting position*/
 void Break::Deactivate_EmergencyBreak()
 {
-    ledcWrite(BREAK_PWM_CHANNEL, MIN_POSITION);
+    ledcWrite(BREAK_PWM_CHANNEL, BREAK_LOOSE);
     EmergencyBreakActive = false;
 }
 

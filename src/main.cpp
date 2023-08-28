@@ -68,6 +68,7 @@ void setup()
   esp_task_wdt_add(NULL);                       /* No special task executed before restart */
   Serial.begin(115200);
   Serial.println("Setup done");
+  myBreak.Deactivate_EmergencyBreak();
 }
 
 /* Loop function
@@ -106,6 +107,7 @@ void loop()
 
       /* set the steering */
       myUart.getSteering(steering_val);
+      steering_val = 0.7 * steering_val;
       stepper.moveTo(steering_val * (-10)); // negative anticlockwise
       /*
       while (stepper.distanceToGo() != 0)
