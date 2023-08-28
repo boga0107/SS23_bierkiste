@@ -52,7 +52,7 @@ void loop();
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
-void IRAM_ATTR ISR_Emergancy_Break();
+void ISR_Emergancy_Break();
 
 /* Setup function
  * initialisation of timer, stepper and watchdog
@@ -71,8 +71,7 @@ void setup()
   Serial.println("Setup done");
   myBreak.Deactivate_EmergencyBreak();
 
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergancy_Break, RISING);
-
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergancy_Break, FALLING);
 }
 
 /* Loop function
@@ -83,8 +82,8 @@ void loop()
   /* execute the distance reading every 20ms */
   if (flagSensor)
   {
-    //Serial.print(counter1ms);
-    //Serial.println(" - measure");
+    // Serial.print(counter1ms);
+    // Serial.println(" - measure");
     mySensors.readDistance();
     flagSensor = false;
 
@@ -173,5 +172,5 @@ void IRAM_ATTR onTimer()
 /* ISR Emergancy Break */
 void IRAM_ATTR ISR_Emergancy_Break()
 {
-  myBreak.Activate_EmergencyBreak();
+  myAntrieb.setSaveState();
 }
