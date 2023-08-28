@@ -52,6 +52,7 @@ void loop();
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
+void IRAM_ATTR ISR_Emergancy_Break();
 
 /* Setup function
  * initialisation of timer, stepper and watchdog
