@@ -21,4 +21,6 @@
 #define N_STEERING_PULSE    25
 #define P_STEERING_PULSE    26
 
+#define INTERRUPT_BREAK 	34
+
 #endif

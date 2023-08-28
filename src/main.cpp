@@ -69,6 +69,9 @@ void setup()
   Serial.begin(115200);
   Serial.println("Setup done");
   myBreak.Deactivate_EmergencyBreak();
+
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergancy_Break, RISING);
+
 }
 
 /* Loop function
@@ -164,4 +167,10 @@ void IRAM_ATTR onTimer()
     // Serial.println(counter1ms);
     flagSensor = true;
   }
+}
+
+/* ISR Emergancy Break */
+void IRAM_ATTR ISR_Emergancy_Break()
+{
+  myBreak.Activate_EmergencyBreak();
 }
