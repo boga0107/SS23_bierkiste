@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <Ultrasonic.h>
 #include "bremse.h"
+#include "pins.h"
 
 /* class to define the HC-SR04 Sensors
  * contains:
@@ -12,7 +13,7 @@
  * check if distance is either below emergency break distance or above maximal distance measued.
  * */
 
-#define EMERGENCY_DISTANCE_VALUE 70
+#define EMERGENCY_DISTANCE_VALUE 60
 #define MAXIMAL_DISTANCE_VALUE 350
 
 class sensor
@@ -29,9 +30,7 @@ private:
     uint16_t distance2;
     uint16_t distance3;
 
-    Ultrasonic sensor1;
-    Ultrasonic sensor2;
-    Ultrasonic sensor3;
+    
 
     Break &myBreak;
 
@@ -44,5 +43,9 @@ public:
     uint16_t getDistance(uint8_t sensorIndex);
     bool distanceOK();
     bool securityCheck(uint8_t sensorIndex);
+
+    Ultrasonic sensor1;
+    Ultrasonic sensor2;
+    Ultrasonic sensor3;
 };
 #endif

@@ -5,11 +5,11 @@
 #include "pins.h"
 #include "antriebsmotor.h"
 
-#define BREAK_PWM_FREQUENCY 5000
-#define BREAK_PWM_CHANNEL 1
+#define BREAK_PWM_FREQUENCY 1000
+#define BREAK_PWM_CHANNEL 0
 #define BREAK_PWM_RESOLUTION 8
-#define MIN_POSITION 0
-#define MAX_POSITION 100
+#define BREAK_SET 120
+#define BREAK_LOOSE 255
 class Break{
 
 private:

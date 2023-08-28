@@ -4,21 +4,21 @@
 #include "Arduino.h"
 
 // Pin Belegung
-#define out_driveDirection  GPIO_NUM_5
-#define out_driveThrottle   GPIO_NUM_18
-#define out_brake           GPIO_NUM_27
+#define out_driveDirection  0
+#define out_driveThrottle   4
+#define out_brake           27
 
-#define sensor1_trigger     GPIO_NUM_23
-#define sensor1_echo        GPIO_NUM_35
-#define sensor2_trigger     GPIO_NUM_36
-#define sensor2_echo        GPIO_NUM_27
-#define sensor3_trigger     GPIO_NUM_12
-#define sensor3_echo        GPIO_NUM_13
-#define rx_pin              GPIO_NUM_16
-#define tx_pin              GPIO_NUM_17
-#define N_STEERING_DIRECTION GPIO_NUM_26
-#define P_STEERING_DIRECTION GPIO_NUM_25
-#define N_STEERING_PULSE    GPIO_NUM_33
-#define P_STEERING_PULSE    GPIO_NUM_34
+#define sensor1_trigger     23
+#define sensor1_echo        22
+#define sensor2_trigger     19
+#define sensor2_echo        18
+#define sensor3_trigger     5
+#define sensor3_echo        21
+#define rx_pin              16
+#define tx_pin              17
+#define N_STEERING_DIRECTION 32
+#define P_STEERING_DIRECTION 33
+#define N_STEERING_PULSE    25
+#define P_STEERING_PULSE    26
 
 #endif

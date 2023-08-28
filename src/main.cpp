@@ -14,6 +14,7 @@
 #include "uart_message.cpp"
 #include <AccelStepper.h>
 #include "antriebsmotor.h"
+#include "antriebsmotor.cpp"
 #include "pins.h"
 #include "sensors.h"
 #include "sensors.cpp"
@@ -22,15 +23,14 @@
 #include <esp_task_wdt.h> /* Load Watchdog-Library */
 
 /* defines */
-#define WDT_TIMEOUT_SECONDS 5
-
+#define WDT_TIMEOUT_SECONDS 10
 /* global variables */
 TaskHandle_t Task_Sensors;
 SemaphoreHandle_t mySemaphore;
 /* timer variables */
 hw_timer_t *timer = NULL;
-uint32_t counter1us = 0;
-bool flag20ms = true;
+uint32_t counter1ms = 0;
+bool flagSensor = false;
 
 int16_t steering_val = 0;
 byte direction = 0;
@@ -63,10 +63,15 @@ void setup()
 {
   timer_init();
   stepper_init();
+  speed = 90;
+  myAntrieb.setSpeed(speed);
 
   /* Watchdog Setup */
   esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
   esp_task_wdt_add(NULL);                       /* No special task executed before restart */
+  Serial.begin(115200);
+  Serial.println("Setup done");
+  myBreak.Deactivate_EmergencyBreak();
 
   /* mulitcore setup */
   if (xPortGetCoreID() == 1)
@@ -86,9 +91,22 @@ void setup()
  */
 void loop()
 {
+  /* execute the distance reading every 20ms */
+  if (flagSensor)
+  {
+    //Serial.print(counter1ms);
+    //Serial.println(" - measure");
+    mySensors.readDistance();
+    flagSensor = false;
+
+    if (!mySensors.distanceOK())
+      myBreak.Activate_EmergencyBreak();
+  }
+
   /* check for messages in the UART */
   if (myUart.msgAvailable())
   {
+    // Serial.println("Uart received");
     /* read the instructions from the surface */
     myUart.getInstructions();
     if (mySensors.distanceOK())
@@ -104,16 +122,28 @@ void loop()
 
       /* set the steering */
       myUart.getSteering(steering_val);
+      steering_val = 0.7 * steering_val;
       stepper.moveTo(steering_val * (-10)); // negative anticlockwise
+      /*
       while (stepper.distanceToGo() != 0)
       {
         stepper.run();
       }
+      */
 
       /* set the speed */
       myUart.getSpeed(speed);
       myAntrieb.setSpeed(speed);
     }
+    else
+    {
+      // Serial.println("Distance not ok");
+    }
+  }
+
+  if (stepper.distanceToGo() != 0)
+  {
+    stepper.run();
   }
 
   esp_task_wdt_reset(); // reset watchdog timer
@@ -139,14 +169,14 @@ void timer_init()
 {
   timer = timerBegin(0, 80, true);            /* Timer_0, prescaling: 80MHz / 80 = 1MHz -> T=1 us */
   timerAttachInterrupt(timer, onTimer, true); /* Interrupt Funktion onTimer() */
-  timerAlarmWrite(timer, 1000000, true);      /* Faktor für Timer z.B. 1000000*1us = 1s */
-  /* Faktor muss evtl halbiert werden. Aktueller Timer zählt 2 Sekunden lang */
+  timerAlarmWrite(timer, 1000, true);         /* Faktor für Timer z.B. 1000000*1us = 1s */
   timerAlarmEnable(timer);
 }
 
 /* Initialisation of stepper */
 void stepper_init()
 {
+
   stepper.setAcceleration(5000); /* Acceleration in steps/s^2 */
   stepper.setMaxSpeed(5000);     /* Speed in steps/s */
   stepper.setSpeed(2000);
@@ -157,8 +187,11 @@ void stepper_init()
 /* Timer interrupt service routine */
 void IRAM_ATTR onTimer()
 {
-  if (counter1us % 20000 == 0)
+  counter1ms++;
+  // Serial.println(counter1ms);
+  if (counter1ms % 100 == 0)
   {
-    flag20ms = true;
+    // Serial.println(counter1ms);
+    flagSensor = true;
   }
 }

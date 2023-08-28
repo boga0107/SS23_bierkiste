@@ -1,10 +1,6 @@
 #include "bremse.h"
 
-<<<<<<< HEAD
 Break::Break(antrieb &pAntrieb, SemaphoreHandle_t &pSemaphore): myAntrieb(pAntrieb), mySemaphore(pSemaphore), EmergencyBreakActive(0)
-=======
-Break::Break(antrieb &pAntrieb): myAntrieb(pAntrieb), EmergencyBreakActive(false)
->>>>>>> feature/bremse_implementierung
 {
     ledcSetup(BREAK_PWM_CHANNEL, BREAK_PWM_FREQUENCY, BREAK_PWM_RESOLUTION);
     ledcAttachPin(out_brake,BREAK_PWM_CHANNEL);
@@ -15,33 +11,22 @@ maxDutyCycle was checked manually
 */
 void Break::Activate_EmergencyBreak()
 {
-    ledcWrite(BREAK_PWM_CHANNEL, MAX_POSITION);
+    ledcWrite(BREAK_PWM_CHANNEL, BREAK_SET);
     myAntrieb.setSaveState();
-<<<<<<< HEAD
     if(xSemaphoreTake(mySemaphore, portMAX_DELAY) == pdTRUE)
     {
         EmergencyBreakActive = 1;
     }
     xSemaphoreGive(mySemaphore);
-=======
+
     EmergencyBreakActive = true;
->>>>>>> feature/bremse_implementierung
 }
 
 /*Function to deactivate/ go to starting position*/
 void Break::Deactivate_EmergencyBreak()
 {
-<<<<<<< HEAD
-    ledcWrite(BREAK_PWM_CHANNEL, DutyCycle);
-    if(xSemaphoreTake(mySemaphore, portMAX_DELAY) == pdTRUE)
-    {
-        EmergencyBreakActive = 0;
-    }
-    xSemaphoreGive(mySemaphore);
-=======
-    ledcWrite(BREAK_PWM_CHANNEL, MIN_POSITION);
+    ledcWrite(BREAK_PWM_CHANNEL, BREAK_LOOSE);
     EmergencyBreakActive = false;
->>>>>>> feature/bremse_implementierung
 }
 
 /*Function to get to know the sate of the break.
