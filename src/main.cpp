@@ -33,6 +33,7 @@ SemaphoreHandle_t Semaphore_Steering;
 hw_timer_t *timer = NULL;
 uint32_t counter1ms = 0;
 bool flagSensor = false;
+bool flagISR = false;
 
 int16_t steering_val = 0;
 byte direction = 0;
@@ -60,6 +61,8 @@ void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
 void IRAM_ATTR ISR_Emergency_Break();
+
+portMUX_TYPE synch = portMUX_INITIALIZER_UNLOCKED;
 
 /* Setup function
  * initialisation of timer, stepper and watchdog
@@ -92,8 +95,8 @@ void setup()
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
   Semaphore_Steering = xSemaphoreCreateMutex();
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, RISING);
-
+  pinMode(INTERRUPT_BREAK, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, FALLING);
 }
 
 /* Loop function
@@ -101,11 +104,19 @@ void setup()
  */
 void loop()
 {
+  if (flagISR)
+  {
+    Serial.print(counter1ms);
+    Serial.println("- x Inside Flag Loop");
+    myAntrieb.setSaveState();
+    flagISR = false;
+  }
+
   /* execute the distance reading every 20ms */
   if (flagSensor)
   {
-    // Serial.print(counter1ms);
-    // Serial.println(" - measure");
+    //Serial.print(counter1ms);
+    //Serial.println(" - measure");
     mySensors.readDistance();
     flagSensor = false;
 
@@ -116,9 +127,19 @@ void loop()
   /* check for messages in the UART */
   if (myUart.msgAvailable())
   {
-    // Serial.println("Uart received");
+    if (myUart.availableForTransmit())
+    {
+      for (int i = 0; i < sizeof(distances); i++)
+      {
+        distances[i] = mySensors.getDistance(i + 1);
+      }
+      myUart.transmitDistances(distances);
+    }
+
     /* read the instructions from the surface */
     myUart.getInstructions();
+
+    /* Only deactivate Emergency if distance correct */
     if (mySensors.distanceOK())
     {
       if (myBreak.get_State_Break())
@@ -132,8 +153,8 @@ void loop()
 
       /* set the steering */
       myUart.getSteering(steering_val);
-      // steering_val = 0.7 * steering_val;
 
+      /* Provide a good moveTo function. Diffrent Thread for Steering */
       if (xSemaphoreTake(Semaphore_Steering, portMAX_DELAY) == pdTRUE)
       {
         stepper.moveTo(steering_val * (-5)); // negative anticlockwise
@@ -144,24 +165,7 @@ void loop()
       myUart.getSpeed(speed);
       myAntrieb.setSpeed(speed);
     }
-    else
-    {
-      //Serial.println("Distance not ok");
-    }
-    if(myUart.availableForTransmit()){
-      for (int i = 0; i < sizeof(distances); i++)
-      {
-        distances[i] = mySensors.getDistance(i+1);
-      }
-      myUart.transmitDistances(distances);
-    }
   }
-
-  /*  if (stepper.distanceToGo() != 0)
-   {
-     stepper.run();
-   } */
-
   // esp_task_wdt_reset(); // reset watchdog timer
 }
 
@@ -190,6 +194,7 @@ void steeringMain(void *parameter)
     }
   }
 }
+
 /* Timer initialisation */
 void timer_init()
 {
@@ -214,10 +219,8 @@ void stepper_init()
 void IRAM_ATTR onTimer()
 {
   counter1ms++;
-  // Serial.println(counter1ms);
   if (counter1ms % 100 == 0)
   {
-    // Serial.println(counter1ms);
     flagSensor = true;
   }
 }
@@ -225,5 +228,7 @@ void IRAM_ATTR onTimer()
 /* ISR Emergancy Break */
 void IRAM_ATTR ISR_Emergency_Break()
 {
-  myBreak.Activate_EmergencyBreak();
+  portENTER_CRITICAL(&synch);
+  flagISR = true;
+  portEXIT_CRITICAL(&synch);
 }
