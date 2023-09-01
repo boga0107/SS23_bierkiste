@@ -60,7 +60,6 @@ void steeringMain(void *parameter);
 void timer_init();
 void stepper_init();
 void IRAM_ATTR onTimer();
-void IRAM_ATTR ISR_Emergency_Break();
 
 portMUX_TYPE synch = portMUX_INITIALIZER_UNLOCKED;
 
@@ -94,8 +93,7 @@ void setup()
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
   Semaphore_Steering = xSemaphoreCreateMutex();
-  pinMode(INTERRUPT_BREAK, INPUT_PULLDOWN);
-  //attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, RISING);
+  
 }
 
 /* Loop function
@@ -103,18 +101,7 @@ void setup()
  */
 void loop()
 {
-  if(digitalRead(INTERRUPT_BREAK) == 1){
-    myAntrieb.setSaveState();
-    Serial.println("Bremse gezogen");
-  }
-  if (flagISR)
-  {
-    Serial.print(counter1ms);
-    Serial.println("- x Inside Flag Loop");
-    myAntrieb.setSaveState();
-    flagISR = false;
-  }
-
+  
   /* execute the distance reading every 20ms */
   if (flagSensor)
   {
@@ -230,12 +217,4 @@ void IRAM_ATTR onTimer()
   {
     flagSensor = true;
   }
-}
-
-/* ISR Emergancy Break */
-void IRAM_ATTR ISR_Emergency_Break()
-{
-  portENTER_CRITICAL(&synch);
-  flagISR = true;
-  portEXIT_CRITICAL(&synch);
 }
