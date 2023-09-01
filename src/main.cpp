@@ -33,6 +33,7 @@ bool flagSensor = false;
 int16_t steering_val = 0;
 byte direction = 0;
 uint16_t speed = 270;
+uint16_t distances[3];
 
 /* global objets */
 AccelStepper stepper(AccelStepper::FULL4WIRE,
@@ -94,6 +95,14 @@ void loop()
   /* check for messages in the UART */
   if (myUart.msgAvailable())
   {
+    if (myUart.availableForTransmit())
+    {
+      for (int i = 0; i < sizeof(distances); i++)
+      {
+        distances[i] = mySensors.getDistance(i + 1);
+      }
+      myUart.transmitDistances(distances);
+    }
     // Serial.println("Uart received");
     /* read the instructions from the surface */
     myUart.getInstructions();
