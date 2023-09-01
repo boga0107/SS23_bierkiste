@@ -31,7 +31,7 @@ boolean antrieb::setSaveState(){
     mDirection= 0;
     setDirection(mDirection);
 
-    mSpeed = 90;
+    mSpeed = SAVE_STATE;
     setSpeed(mSpeed);
     return true;
 }

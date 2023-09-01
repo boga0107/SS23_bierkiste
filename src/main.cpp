@@ -33,7 +33,7 @@ SemaphoreHandle_t Semaphore_Steering;
 hw_timer_t *timer = NULL;
 uint32_t counter1ms = 0;
 bool flagSensor = false;
-bool flagISR = false;
+volatile bool flagISR = false;
 
 int16_t steering_val = 0;
 byte direction = 0;
@@ -71,8 +71,7 @@ void setup()
 {
   timer_init();
   stepper_init();
-  speed = 90;
-  myAntrieb.setSpeed(speed);
+  myAntrieb.setSaveState();
 
   /* Watchdog Setup */
   // esp_task_wdt_init(WDT_TIMEOUT_SECONDS, true); /* Init Watchdog with 5 seconds timeout and panicmode */
@@ -95,8 +94,8 @@ void setup()
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
   Semaphore_Steering = xSemaphoreCreateMutex();
-  pinMode(INTERRUPT_BREAK, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, FALLING);
+  pinMode(INTERRUPT_BREAK, INPUT_PULLDOWN);
+  //attachInterrupt(digitalPinToInterrupt(INTERRUPT_BREAK), ISR_Emergency_Break, RISING);
 }
 
 /* Loop function
@@ -104,6 +103,10 @@ void setup()
  */
 void loop()
 {
+  if(digitalRead(INTERRUPT_BREAK) == 1){
+    myAntrieb.setSaveState();
+    Serial.println("Bremse gezogen");
+  }
   if (flagISR)
   {
     Serial.print(counter1ms);
@@ -120,8 +123,12 @@ void loop()
     mySensors.readDistance();
     flagSensor = false;
 
-    if (!mySensors.distanceOK())
+    if (!mySensors.distanceOK()){
       myBreak.Activate_EmergencyBreak();
+    }
+    else {
+      myBreak.Deactivate_EmergencyBreak();
+    }
   }
 
   /* check for messages in the UART */
@@ -157,7 +164,7 @@ void loop()
       /* Provide a good moveTo function. Diffrent Thread for Steering */
       if (xSemaphoreTake(Semaphore_Steering, portMAX_DELAY) == pdTRUE)
       {
-        stepper.moveTo(steering_val * (-5)); // negative anticlockwise
+        stepper.moveTo(steering_val * (-4)); // negative anticlockwise
       }
       xSemaphoreGive(Semaphore_Steering);
 
@@ -219,7 +226,7 @@ void stepper_init()
 void IRAM_ATTR onTimer()
 {
   counter1ms++;
-  if (counter1ms % 100 == 0)
+  if (counter1ms % 150 == 0)
   {
     flagSensor = true;
   }
