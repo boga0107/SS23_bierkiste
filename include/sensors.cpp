@@ -7,7 +7,8 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,
                                                                     sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3), myBreak(pBreak),
                                                                     sensor1(sensorTriggerPin1, sensorEchoPin1),
                                                                     sensor2(sensorTriggerPin2, sensorEchoPin2),
-                                                                    sensor3(sensorTriggerPin3, sensorEchoPin3)
+                                                                    sensor3(sensorTriggerPin3, sensorEchoPin3),
+                                                                    mIndex(0)
 {
   pinMode(sensor1_trigger, OUTPUT);
   pinMode(sensor1_echo, INPUT);
@@ -15,6 +16,13 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,
   pinMode(sensor2_echo, INPUT);
   pinMode(sensor3_trigger, OUTPUT);
   pinMode(sensor3_echo, INPUT);
+
+  for (uint8_t i = 0; i < FILTER_SIZE; i++)
+  {
+    distance1Filter[i] = sensor1.read();
+    distance2Filter[i] = sensor2.read();
+    distance3Filter[i] = sensor3.read();
+  }
 }
 
 void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
@@ -28,25 +36,42 @@ void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
   switch (sensorIndex)
   {
   case 1:
-    distance1 = pDistance;
-    /*
+    distance1Filter[mIndex] = pDistance;
+    distance1 = 0;
+    for (uint8_t i = 0; i < FILTER_SIZE; i++)
+    {
+      distance1 += distance1Filter[i];
+    }
+    distance1 = distance1 / FILTER_SIZE;
+
     Serial.print("Sensor 1: ");
     Serial.println(distance1);
-    */
+
     break;
   case 2:
-    distance2 = pDistance;
-    /*
+    distance2Filter[mIndex] = pDistance;
+    distance2 = 0;
+    for (uint8_t i = 0; i < FILTER_SIZE; i++)
+    {
+      distance2 += distance2Filter[i];
+    }
+    distance2 = distance2 / FILTER_SIZE;
+
     Serial.print("Sensor 2: ");
     Serial.println(distance2);
-    */
+
     break;
   case 3:
-    distance3 = pDistance;
-    /*
+    distance3Filter[mIndex] = pDistance;
+    distance3 = 0;
+    for (uint8_t i = 0; i < FILTER_SIZE; i++)
+    {
+      distance3 += distance3Filter[i];
+    }
+    distance3 = distance3 / FILTER_SIZE;
+
     Serial.print("Sensor 3: ");
     Serial.println(distance3);
-    */
 
     break;
   default:
@@ -61,6 +86,8 @@ void sensor::readDistance()
   setDistance(sensor1.read(), 1);
   setDistance(sensor2.read(), 2);
   setDistance(sensor3.read(), 3);
+  mIndex++;
+  mIndex %= FILTER_SIZE;
 
   if (!distanceOK())
     myBreak.Activate_EmergencyBreak();
