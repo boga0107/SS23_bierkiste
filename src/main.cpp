@@ -50,7 +50,13 @@ AccelStepper stepper(AccelStepper::FULL4WIRE,
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
 Break myBreak(myAntrieb, mySemaphore);
-sensor mySensors(sensor1_trigger, sensor2_trigger, sensor3_trigger, sensor1_echo, sensor2_echo, sensor3_echo, myBreak);
+sensor mySensors(sensor1_trigger, 
+                 sensor2_trigger, 
+                 sensor3_trigger,
+                 sensor1_echo, 
+                 sensor2_echo, 
+                 sensor3_echo,
+                 myBreak);
 
 /* Function prototypes */
 void setup();
@@ -213,7 +219,7 @@ void stepper_init()
 void IRAM_ATTR onTimer()
 {
   counter1ms++;
-  if (counter1ms % 150 == 0)
+  if (counter1ms % 200 == 0)
   {
     flagSensor = true;
   }
