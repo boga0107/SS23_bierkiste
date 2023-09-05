@@ -64,9 +64,9 @@ bool UartMessage::availableForTransmit()
 
 void UartMessage::transmitDistances(uint16_t pDistance[3])
 {
-    distance_1 = pDistance[0];
-    distance_2 = pDistance[1];
-    distance_3 = pDistance[2];
+    distance_1 = pDistance[0]; // left
+    distance_2 = pDistance[1]; // middle 
+    distance_3 = pDistance[2]; // right
 
     txBuffer[0] = 0xAA;
     

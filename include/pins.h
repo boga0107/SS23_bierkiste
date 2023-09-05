@@ -8,12 +8,12 @@
 #define out_driveThrottle   4
 #define out_brake           27
 
-#define sensor1_trigger     23
-#define sensor1_echo        22
-#define sensor2_trigger     19
-#define sensor2_echo        18
-#define sensor3_trigger     5
-#define sensor3_echo        21
+#define sensorLeft_trigger     23
+#define sensorLeft_echo        22
+#define sensorRight_trigger 19
+#define sensorRight_echo    18
+#define sensorMiddle_trigger     5
+#define sensorMiddle_echo        21
 #define rx_pin              16
 #define tx_pin              17
 #define N_STEERING_DIRECTION 32

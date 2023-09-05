@@ -5,23 +5,23 @@ sensor::sensor(uint8_t TriggerPin1, uint8_t TriggerPin2,
                uint8_t EchoPin2, uint8_t EchoPin3, Break &pBreak) : sensorTriggerPin1(TriggerPin1), sensorTriggerPin2(TriggerPin2),
                                                                     sensorTriggerPin3(TriggerPin3), sensorEchoPin1(EchoPin1),
                                                                     sensorEchoPin2(EchoPin2), sensorEchoPin3(EchoPin3), myBreak(pBreak),
-                                                                    sensor1(sensorTriggerPin1, sensorEchoPin1),
-                                                                    sensor2(sensorTriggerPin2, sensorEchoPin2),
-                                                                    sensor3(sensorTriggerPin3, sensorEchoPin3),
+                                                                    sensorLeft(sensorTriggerPin1, sensorEchoPin1),
+                                                                    sensorRight(sensorTriggerPin2, sensorEchoPin2),
+                                                                    sensorMiddle(sensorTriggerPin3, sensorEchoPin3),
                                                                     mIndex(0)
 {
-  pinMode(sensor1_trigger, OUTPUT);
-  pinMode(sensor1_echo, INPUT);
-  pinMode(sensor2_trigger, OUTPUT);
-  pinMode(sensor2_echo, INPUT);
-  pinMode(sensor3_trigger, OUTPUT);
-  pinMode(sensor3_echo, INPUT);
+  pinMode(sensorLeft_trigger, OUTPUT);
+  pinMode(sensorLeft_echo, INPUT);
+  pinMode(sensorRight_trigger, OUTPUT);
+  pinMode(sensorRight_echo, INPUT);
+  pinMode(sensorMiddle_trigger, OUTPUT);
+  pinMode(sensorMiddle_echo, INPUT);
 
   for (uint8_t i = 0; i < FILTER_SIZE; i++)
   {
-    distance1Filter[i] = sensor1.read();
-    distance2Filter[i] = sensor2.read();
-    distance3Filter[i] = sensor3.read();
+    distanceLeftFilter[i] = sensorLeft.read();
+    distanceRightFilter[i] = sensorRight.read();
+    distanceMiddleFilter[i] = sensorMiddle.read();
   }
 }
 
@@ -36,42 +36,42 @@ void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
   switch (sensorIndex)
   {
   case 1:
-    distance1Filter[mIndex] = pDistance;
-    distance1 = 0;
+    distanceLeftFilter[mIndex] = pDistance;
+    distanceLeft = 0;
     for (uint8_t i = 0; i < FILTER_SIZE; i++)
     {
-      distance1 += distance1Filter[i];
+      distanceLeft += distanceLeftFilter[i];
     }
-    distance1 = distance1 / FILTER_SIZE;
+    distanceLeft = distanceLeft / FILTER_SIZE;
 
     Serial.print("Sensor 1: ");
-    Serial.println(distance1);
+    Serial.println(distanceLeft);
 
     break;
   case 2:
-    distance2Filter[mIndex] = pDistance;
-    distance2 = 0;
+    distanceRightFilter[mIndex] = pDistance;
+    distanceRight = 0;
     for (uint8_t i = 0; i < FILTER_SIZE; i++)
     {
-      distance2 += distance2Filter[i];
+      distanceRight += distanceRightFilter[i];
     }
-    distance2 = distance2 / FILTER_SIZE;
+    distanceRight = distanceRight / FILTER_SIZE;
 
     Serial.print("Sensor 2: ");
-    Serial.println(distance2);
+    Serial.println(distanceRight);
 
     break;
   case 3:
-    distance3Filter[mIndex] = pDistance;
-    distance3 = 0;
+    distanceMiddleFilter[mIndex] = pDistance;
+    distanceMiddle = 0;
     for (uint8_t i = 0; i < FILTER_SIZE; i++)
     {
-      distance3 += distance3Filter[i];
+      distanceMiddle += distanceMiddleFilter[i];
     }
-    distance3 = distance3 / FILTER_SIZE;
+    distanceMiddle = distanceMiddle / FILTER_SIZE;
 
     Serial.print("Sensor 3: ");
-    Serial.println(distance3);
+    Serial.println(distanceMiddle);
 
     break;
   default:
@@ -83,9 +83,9 @@ void sensor::setDistance(uint16_t pDistance, uint8_t sensorIndex)
 /* read the distance and break if necessary*/
 void sensor::readDistance()
 {
-  setDistance(sensor1.read(), 1);
-  setDistance(sensor2.read(), 2);
-  setDistance(sensor3.read(), 3);
+  setDistance(sensorLeft.read(), 1);
+  setDistance(sensorRight.read(), 2);
+  setDistance(sensorMiddle.read(), 3);
   mIndex++;
   mIndex %= FILTER_SIZE;
 
@@ -98,11 +98,11 @@ uint16_t sensor::getDistance(uint8_t sensorIndex)
   switch (sensorIndex)
   {
   case 1:
-    return distance1;
+    return distanceLeft;
   case 2:
-    return distance2;
+    return distanceMiddle;
   case 3:
-    return distance3;
+    return distanceRight;
   default:
     return 0; /* might cause an emergency break */
   }

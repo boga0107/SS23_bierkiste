@@ -27,12 +27,12 @@ private:
     const uint8_t sensorEchoPin1;
     const uint8_t sensorEchoPin2;
     const uint8_t sensorEchoPin3;
-    uint16_t distance1Filter[FILTER_SIZE];
-    uint16_t distance1;
-    uint16_t distance2Filter[FILTER_SIZE];
-    uint16_t distance2;
-    uint16_t distance3Filter[FILTER_SIZE];
-    uint16_t distance3;
+    uint16_t distanceLeftFilter[FILTER_SIZE];
+    uint16_t distanceLeft;
+    uint16_t distanceRightFilter[FILTER_SIZE];
+    uint16_t distanceRight;
+    uint16_t distanceMiddleFilter[FILTER_SIZE];
+    uint16_t distanceMiddle;
 
     uint8_t mIndex;
 
@@ -51,8 +51,8 @@ public:
     bool securityCheck(uint8_t sensorIndex);
     
 
-    Ultrasonic sensor1;
-    Ultrasonic sensor2;
-    Ultrasonic sensor3;
+    Ultrasonic sensorLeft;
+    Ultrasonic sensorRight;
+    Ultrasonic sensorMiddle;
 };
 #endif

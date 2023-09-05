@@ -50,12 +50,12 @@ AccelStepper stepper(AccelStepper::FULL4WIRE,
 UartMessage myUart(rx_pin, tx_pin, 115200, SERIAL_8N1);
 antrieb myAntrieb(out_driveThrottle, out_driveDirection);
 Break myBreak(myAntrieb, mySemaphore);
-sensor mySensors(sensor1_trigger, 
-                 sensor2_trigger, 
-                 sensor3_trigger,
-                 sensor1_echo, 
-                 sensor2_echo, 
-                 sensor3_echo,
+sensor mySensors(sensorLeft_trigger,
+                 sensorRight_trigger,
+                 sensorMiddle_trigger,
+                 sensorLeft_echo,
+                 sensorRight_echo,
+                 sensorMiddle_echo,
                  myBreak);
 
 /* Function prototypes */
@@ -75,7 +75,6 @@ portMUX_TYPE synch = portMUX_INITIALIZER_UNLOCKED;
 void setup()
 {
   timer_init();
-  stepper_init();
   myAntrieb.setSaveState();
 
   /* Watchdog Setup */
@@ -99,7 +98,6 @@ void setup()
   /* Semaphore setup */
   mySemaphore = xSemaphoreCreateMutex();
   Semaphore_Steering = xSemaphoreCreateMutex();
-  
 }
 
 /* Loop function
@@ -107,19 +105,21 @@ void setup()
  */
 void loop()
 {
-  
+
   /* execute the distance reading every 20ms */
   if (flagSensor)
   {
-    //Serial.print(counter1ms);
-    //Serial.println(" - measure");
+    // Serial.print(counter1ms);
+    // Serial.println(" - measure");
     mySensors.readDistance();
     flagSensor = false;
 
-    if (!mySensors.distanceOK()){
+    if (!mySensors.distanceOK())
+    {
       myBreak.Activate_EmergencyBreak();
     }
-    else {
+    else
+    {
       myBreak.Deactivate_EmergencyBreak();
     }
   }
@@ -186,6 +186,7 @@ void sensorMain(void *parameter)
 
 void steeringMain(void *parameter)
 {
+  stepper_init();
   for (;;)
   {
     while (stepper.distanceToGo() != 0)
@@ -219,7 +220,7 @@ void stepper_init()
 void IRAM_ATTR onTimer()
 {
   counter1ms++;
-  if (counter1ms % 200 == 0)
+  if (counter1ms % 90 == 0)
   {
     flagSensor = true;
   }
