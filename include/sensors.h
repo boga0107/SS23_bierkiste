@@ -13,7 +13,7 @@
  * check if distance is either below emergency break distance or above maximal distance measued.
  * */
 
-#define EMERGENCY_DISTANCE_VALUE 50
+#define EMERGENCY_DISTANCE_VALUE 70
 #define MAXIMAL_DISTANCE_VALUE 350
 #define FILTER_SIZE 3
 
